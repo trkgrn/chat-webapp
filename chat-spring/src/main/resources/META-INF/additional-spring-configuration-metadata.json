@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "spring.cache.host",
+      "type": "java.lang.String",
+      "description": "Description for spring.cache.host."
+  }
+] }
