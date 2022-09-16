@@ -1,6 +1,6 @@
 package com.trkgrn.chat.api.controller;
 
-import com.trkgrn.chat.api.model.WsMessage;
+import com.trkgrn.chat.api.model.ws.WsMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;

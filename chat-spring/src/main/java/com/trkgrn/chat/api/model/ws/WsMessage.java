@@ -1,4 +1,4 @@
-package com.trkgrn.chat.api.model;
+package com.trkgrn.chat.api.model.ws;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

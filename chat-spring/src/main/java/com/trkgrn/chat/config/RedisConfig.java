@@ -1,14 +1,17 @@
 package com.trkgrn.chat.config;
 
-import org.springframework.cache.annotation.EnableCaching;
+import com.trkgrn.chat.api.model.concretes.Token;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
+import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
-@EnableCaching
+@EnableRedisRepositories
 public class RedisConfig {
 
     @Bean
@@ -17,9 +20,15 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisTemplate redisTemplate() {
-        RedisTemplate template = new RedisTemplate<>();
+    public RedisTemplate<String, Object> template() {
+        RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(jedisConnectionFactory());
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setHashKeySerializer(new StringRedisSerializer());
+        template.setHashKeySerializer(new JdkSerializationRedisSerializer());
+        template.setValueSerializer(new JdkSerializationRedisSerializer());
+        template.setEnableTransactionSupport(true);
+        template.afterPropertiesSet();
         return template;
     }
 }
