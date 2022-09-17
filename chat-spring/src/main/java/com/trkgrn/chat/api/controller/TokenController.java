@@ -23,7 +23,7 @@ public class TokenController {
 
     @PostMapping
     public ResponseEntity<?> save(@RequestBody Token token) {
-        return new ResponseEntity<>(tokenService.save(token), HttpStatus.CREATED);
+        return new ResponseEntity<>(tokenService.save(token), HttpStatus.OK);
     }
 
     @GetMapping("/{username}")
@@ -33,7 +33,7 @@ public class TokenController {
             token = tokenService.findTokenByUsername(username);
         }
         catch (NullPointerException e){
-            throw new NullPointerExc("Token bulunamadı.");
+            throw new NullPointerExc("Oturum süresi sona erdi.");
         }
         return ResponseEntity.ok(token);
     }

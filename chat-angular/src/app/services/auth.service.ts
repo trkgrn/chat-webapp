@@ -11,7 +11,8 @@ export class AuthService {
 
   username: string | undefined;
   password: string | undefined;
-  rootURL: string = "localhost:8080/"
+  authURL: string = "http://localhost:8080/auth/"
+  tokenURL: string = "http://localhost:8080/token/"
 
   constructor(private http: HttpClient, private router: Router) {
   }
@@ -20,36 +21,27 @@ export class AuthService {
   private header: HttpHeaders | undefined;
 
 
-  signout() {
+  signOut() {
     localStorage.removeItem('username');
-    localStorage.removeItem('token');
     localStorage.removeItem('role');
-    localStorage.removeItem('userId');
-
     this.router.navigateByUrl('login');
   }
 
   isUserSignedin() {
-    return localStorage.getItem('token') !== null;
+    return localStorage.getItem('username') !== null;
   }
 
-  getSignedinUser() {
+  getUsername() {
     return localStorage.getItem('username') as string;
   }
 
   getToken() {
-    let token = localStorage.getItem('token') as string;
-    return token;
+    return this.http.get(this.tokenURL+this.getUsername());
   }
 
   getRole() {
     let role = localStorage.getItem("role") as string;
     return role;
-  }
-
-  getUserId() {
-    let id = localStorage.getItem("userId") as string;
-    return id;
   }
 
   roleMatch(allowedRoles: any) {
@@ -71,36 +63,34 @@ export class AuthService {
     return isMatch
   }
 
+  saveToken(token:any){
+    let obj = {jwt:token, username:this.getUsername()}
+   console.log(obj)
+  return this.http.post<any>(this.tokenURL,obj);
+  }
 
-  login(user: User): Observable<object> {
-    return this.http.post<any>(this.rootURL + 'login', user, {headers: new HttpHeaders({'Content-Type': 'application/json'})}).pipe(map((resp) => {
+  login(user: any): Observable<object> {
+    return this.http.post<any>(this.authURL + 'login', user, {headers: new HttpHeaders({'Content-Type': 'application/json'})}).pipe(map(async (resp) => {
       if (typeof user.username === "string") {
         localStorage.setItem('username', user.username);
-        localStorage.setItem('userId', resp.id);
-        localStorage.setItem('role', resp.role.name);
-        console.log(resp.role.name)
+        localStorage.setItem('role', resp.role);
       }
-      localStorage.setItem('token', resp.token);
       return resp;
     }));
   }
 
-  register(user: User) {
-    return this.http.post<User>(this.rootURL + "register", user);
-
+  register(user: any) {
+    return this.http.post<User>(this.authURL + "register", user);
   }
 
   getUser(name: string) {
     const headers = new HttpHeaders({'Authorization': 'Bearer ' + this.getToken()})
-    return this.http.get(this.rootURL + "getUser?username=" + name, {headers});
+    return this.http.get(this.authURL + "getUser?username=" + name, {headers});
   }
 
   getAllUser() {
     const headers = new HttpHeaders({'Authorization': 'Bearer ' + this.getToken()})
-    return this.http.get(this.rootURL + "getAllUser", {headers});
+    return this.http.get(this.authURL + "getAllUser", {headers});
   }
 
-  getAllRoles() {
-    return this.http.get(this.rootURL + "getAllRoles");
-  }
 }

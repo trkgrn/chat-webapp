@@ -10,9 +10,21 @@
         </div>
 
         <div [formGroup]="form" class="md:w-10 mx-auto">
+
           <div class="p-inputgroup w-full mb-5">
             <span class="p-inputgroup-addon">
                 <i class="pi pi-user"></i>
+            </span>
+            <span class="p-float-label">
+                <input type="text" id="name" pInputText formControlName="name"
+                       [required]="true">
+                <label for="name">Ad-Soyad</label>
+            </span>
+          </div>
+
+          <div class="p-inputgroup w-full mb-5">
+            <span class="p-inputgroup-addon">
+                <i class="pi pi-at"></i>
             </span>
             <span class="p-float-label">
                 <input type="text" id="username" pInputText formControlName="username"
@@ -29,6 +41,17 @@
                 <input type="text" id="mail" pInputText formControlName="mail"
                        [required]="true">
                 <label for="mail">E-Mail Adresi</label>
+            </span>
+          </div>
+
+          <div class="p-inputgroup w-full mb-5">
+            <span class="p-inputgroup-addon">
+                <i class="pi pi-phone"></i>
+            </span>
+            <span class="p-float-label">
+                <input type="text" id="tel" pInputText formControlName="telNumber"
+                       [required]="true">
+                <label for="tel">Telefon Numarası</label>
             </span>
           </div>
 
@@ -53,3 +76,4 @@
     </div>
   </div>
 </div>
+<p-toast [style]="{marginTop: '80px'}"></p-toast>

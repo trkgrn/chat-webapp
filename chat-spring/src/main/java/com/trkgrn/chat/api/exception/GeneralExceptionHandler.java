@@ -30,4 +30,13 @@ public class GeneralExceptionHandler {
 
     }
 
+    @ExceptionHandler(value = { SQLExc.class })
+    public ResponseEntity<Object> handleSQLException(SQLExc ex) {
+
+        logger.error("SQLException Bulundu: ",ex.getMessage());
+
+        return new ResponseEntity<Object>(ex.getMessage(),HttpStatus.BAD_REQUEST);
+
+    }
+
 }

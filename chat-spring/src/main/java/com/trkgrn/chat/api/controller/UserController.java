@@ -2,9 +2,14 @@ package com.trkgrn.chat.api.controller;
 
 import com.trkgrn.chat.api.service.concretes.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "*")
+@RequestMapping("/user")
 public class UserController {
 
     private final UserService userService;
@@ -13,6 +18,12 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
+
+    @GetMapping("/getAllUser")
+    public ResponseEntity<?> getAll(){
+        return ResponseEntity.ok(this.userService.getAllUser());
+    }
+
 
 
 }

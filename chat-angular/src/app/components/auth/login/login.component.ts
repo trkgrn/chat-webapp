@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {LayoutService} from "../../../services/layout.service";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {AuthService} from "../../../services/auth.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-login',
@@ -12,8 +12,8 @@ export class LoginComponent implements OnInit {
 
   form:FormGroup;
 
-  constructor(public layoutService:LayoutService,private formBuilder:FormBuilder,
-              private authService:AuthService) {
+  constructor(private formBuilder:FormBuilder, private authService:AuthService,
+              private router:Router) {
     this.form = formBuilder.group({
       username:[null , Validators.required],
       password:[null, Validators.required]
@@ -23,4 +23,10 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
   }
 
+ async login()
+  {
+    let resp:any = await this.authService.login(this.form.value).toPromise();
+    let saveToken:any = await this.authService.saveToken(resp.token).toPromise();
+    this.router.navigate(["/home"]);
+  }
 }

@@ -1,5 +1,6 @@
 package com.trkgrn.chat.api.controller;
 
+import com.trkgrn.chat.api.exception.SQLExc;
 import com.trkgrn.chat.api.model.concretes.User;
 import com.trkgrn.chat.api.service.concretes.UserService;
 import com.trkgrn.chat.config.jwt.model.Response;
@@ -8,6 +9,7 @@ import com.trkgrn.chat.api.service.userdetail.UserDetailService;
 import com.trkgrn.chat.config.jwt.model.AuthRequest;
 import com.trkgrn.chat.config.jwt.service.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,28 +20,23 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@CrossOrigin(origins = "*")
+@CrossOrigin
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final JwtUtil jwtUtil;
-
-
-    private final AuthenticationManager authenticationManager;
-
-
-    private final UserDetailService userDetailsService;
-
-
-    private final UserService userService;
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @Autowired
-    public AuthController(JwtUtil jwtUtil, AuthenticationManager authenticationManager, UserDetailService userDetailsService, UserService userService) {
-        this.jwtUtil = jwtUtil;
-        this.authenticationManager = authenticationManager;
-        this.userDetailsService = userDetailsService;
-        this.userService = userService;
-    }
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private UserDetailService userDetailsService;
+
+    @Autowired
+    private UserService userService;
+
+
 
     @PostMapping("/login")
     public ResponseEntity<Response> login(@RequestBody AuthRequest authRequest) throws Exception {
@@ -59,6 +56,19 @@ public class AuthController {
 
     @PostMapping(value = "/register")
     public ResponseEntity<?> register(@Valid @RequestBody User user) {
-        return new ResponseEntity<>(this.userService.add(user),HttpStatus.CREATED);
+        User addedUser = null;
+        try{
+            addedUser = this.userService.add(user);
+        }
+        catch (DataIntegrityViolationException ex){
+            throw new SQLExc("Sistemde bu bilgilere ait kayıt bulunmaktadır. Lütfen bilgilerinizi kontrol edin.");
+        }
+
+          return new ResponseEntity<>(addedUser,HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{username}")
+    public ResponseEntity<?> getUserRole(@PathVariable String username){
+        return ResponseEntity.ok(this.userService.findByUserName(username).getRole());
     }
 }

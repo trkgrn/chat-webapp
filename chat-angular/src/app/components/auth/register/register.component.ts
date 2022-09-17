@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {LayoutService} from "../../../services/layout.service";
 import {AuthService} from "../../../services/auth.service";
+import {Router} from "@angular/router";
+import {MessageService} from "primeng/api";
 
 @Component({
   selector: 'app-register',
@@ -12,12 +13,16 @@ export class RegisterComponent implements OnInit {
 
   form:FormGroup;
 
-  constructor(public layoutService:LayoutService,private formBuilder:FormBuilder,
-              private authService:AuthService) {
+  constructor(private formBuilder:FormBuilder, private authService:AuthService,
+              private router:Router,private messageService:MessageService) {
     this.form = formBuilder.group({
       username:[null , Validators.required],
       password:[null, Validators.required],
-      mail:[null,Validators.required]
+      mail:[null,Validators.required],
+      name:[null,Validators.required],
+      telNumber:[null,Validators.required],
+      role:["KULLANICI",Validators.required]
+
     })
   }
 
@@ -25,7 +30,14 @@ export class RegisterComponent implements OnInit {
   }
 
   register(){
-    console.log(this.form.value)
+    this.authService.register(this.form.value)
+      .subscribe(data=>{
+        this.router.navigate(["/login"]);
+        alert("Kayıt başarılı!");
+      },error =>{
+        this.messageService.add({severity: 'error', summary: 'Hatalı giriş!',
+          detail: error.error});
+      } )
   }
 
 }
