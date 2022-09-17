@@ -20,4 +20,10 @@ public class UserService implements IUserService {
     public User findByUserName(String userName) {
         return this.userRepository.findByUsername(userName);
     }
+
+    @Override
+    public User add(User user) {
+        User addedUser = this.userRepository.save(user);
+        return addedUser;
+    }
 }
