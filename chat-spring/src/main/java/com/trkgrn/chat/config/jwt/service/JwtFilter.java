@@ -1,6 +1,9 @@
 package com.trkgrn.chat.config.jwt.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.trkgrn.chat.api.exception.ExpiredJwtExc;
 import com.trkgrn.chat.api.service.userdetail.UserDetailService;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,6 +17,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
@@ -32,8 +38,14 @@ public class JwtFilter extends OncePerRequestFilter {
         String username = null;
         String jwt = null;
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            jwt = authHeader.substring(7);
-            username = jwtUtil.extractUsername(jwt);
+            try {
+                jwt = authHeader.substring(7);
+                username = jwtUtil.extractUsername(jwt);
+            }
+            catch (ExpiredJwtException e){
+                sendError(response,e);
+                return;
+            }
         }
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
@@ -45,5 +57,17 @@ public class JwtFilter extends OncePerRequestFilter {
             }
         }
         filterChain.doFilter(request, response);
+    }
+
+
+    private void sendError(HttpServletResponse res, Exception e) throws IOException {
+        res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        res.setContentType("application/json");
+        PrintWriter out = res.getWriter();
+        Map<String, String> errors = new HashMap<>();
+        ObjectMapper mapper = new ObjectMapper();
+        errors.put("error", e.getMessage());
+        out.print(mapper.writeValueAsString(errors));
+        out.flush();
     }
 }

@@ -12,12 +12,14 @@ import {ButtonModule} from "primeng/button";
 import {RippleModule} from "primeng/ripple";
 import {InputTextModule} from "primeng/inputtext";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {HttpClientModule} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {AuthService} from "./services/auth.service";
 import {LoginGuard} from "./components/auth/login/login.guard";
 import {ToastModule} from "primeng/toast";
 import {MessageService} from "primeng/api";
 import { HomeComponent } from './components/home/home.component';
+import {HttpService} from "./services/http.service";
+import {JwtInterceptor} from "./JwtInterceptor";
 
 @NgModule({
   declarations: [
@@ -40,7 +42,8 @@ import { HomeComponent } from './components/home/home.component';
     HttpClientModule,
     ToastModule
   ],
-  providers: [AuthService,LoginGuard,MessageService],
+  providers: [AuthService,LoginGuard,MessageService,HttpService,
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

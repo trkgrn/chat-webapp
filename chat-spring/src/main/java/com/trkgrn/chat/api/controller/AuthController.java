@@ -1,7 +1,9 @@
 package com.trkgrn.chat.api.controller;
 
 import com.trkgrn.chat.api.exception.SQLExc;
+import com.trkgrn.chat.api.model.concretes.Token;
 import com.trkgrn.chat.api.model.concretes.User;
+import com.trkgrn.chat.api.service.concretes.TokenService;
 import com.trkgrn.chat.api.service.concretes.UserService;
 import com.trkgrn.chat.config.jwt.model.Response;
 import com.trkgrn.chat.api.service.userdetail.CustomUserDetails;
@@ -36,6 +38,9 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private TokenService tokenService;
+
 
 
     @PostMapping("/login")
@@ -49,7 +54,8 @@ public class AuthController {
         final String jwt = jwtUtil.generateToken(userDetails);
 
         // rediste 10 dk kaydet
-
+            tokenService.save(new Token(authRequest.getUsername(),jwt));
+            
 
         return new ResponseEntity<Response>(new Response(jwt, userDetails.getRole(), userDetails.getId()), HttpStatus.OK);
     }

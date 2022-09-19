@@ -39,4 +39,13 @@ public class GeneralExceptionHandler {
 
     }
 
+    @ExceptionHandler(value = { ExpiredJwtExc.class })
+    public ResponseEntity<Object> handleExpiredJwtException(ExpiredJwtExc ex) {
+
+        logger.error("ExpiredJwtExc Bulundu: ",ex.getMessage());
+
+        return new ResponseEntity<Object>(ex.getMessage(),HttpStatus.UNAUTHORIZED);
+
+    }
+
 }

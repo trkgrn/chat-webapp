@@ -13,9 +13,8 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  async test(){
-    let token:any = await this.authService.getToken().toPromise();
-
+ async test(){
+   await this.authService.test();
   }
 
 }

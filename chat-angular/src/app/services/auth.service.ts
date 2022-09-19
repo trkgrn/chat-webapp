@@ -3,6 +3,7 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {map, Observable} from "rxjs";
 import {Router} from "@angular/router";
 import {User} from "../model/user";
+import {HttpService} from "./http.service";
 
 @Injectable({
   providedIn: 'root'
@@ -10,33 +11,40 @@ import {User} from "../model/user";
 export class AuthService {
 
   username: string | undefined;
+  email:string | undefined;
+  jwt:string | undefined;
   password: string | undefined;
   authURL: string = "http://localhost:8080/auth/"
   tokenURL: string = "http://localhost:8080/token/"
+  userURL:string = "http://localhost:8080/user/"
 
-  constructor(private http: HttpClient, private router: Router) {
+  constructor(private http: HttpClient, private router: Router,
+              private httpService:HttpService) {
   }
 
   loggedIn = false;
   private header: HttpHeaders | undefined;
 
+  test(){
+    return this.httpService.get("user/test");
+  }
+
 
   signOut() {
-    localStorage.removeItem('username');
-    localStorage.removeItem('role');
+    localStorage.removeItem('token');
     this.router.navigateByUrl('login');
   }
 
   isUserSignedin() {
-    return localStorage.getItem('username') !== null;
+    return localStorage.getItem('token') !== null;
   }
 
-  getUsername() {
-    return localStorage.getItem('username') as string;
-  }
+  // getUsername() {
+  //   return localStorage.getItem('token') as string;
+  // }
 
   getToken() {
-    return this.http.get(this.tokenURL+this.getUsername());
+    return localStorage.getItem('token') as string;
   }
 
   getRole() {
@@ -63,17 +71,14 @@ export class AuthService {
     return isMatch
   }
 
-  saveToken(token:any){
-    let obj = {jwt:token, username:this.getUsername()}
-   console.log(obj)
-  return this.http.post<any>(this.tokenURL,obj);
-  }
 
   login(user: any): Observable<object> {
     return this.http.post<any>(this.authURL + 'login', user, {headers: new HttpHeaders({'Content-Type': 'application/json'})}).pipe(map(async (resp) => {
       if (typeof user.username === "string") {
-        localStorage.setItem('username', user.username);
-        localStorage.setItem('role', resp.role);
+        localStorage.setItem('token', resp.token);
+        localStorage.setItem('role',resp.role);
+        this.jwt = resp.token;
+
       }
       return resp;
     }));

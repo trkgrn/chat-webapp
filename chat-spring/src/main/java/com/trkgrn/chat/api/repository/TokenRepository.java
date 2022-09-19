@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.time.Duration;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Repository
@@ -21,7 +19,7 @@ public class TokenRepository {
     }
 
     public Token save(Token token){
-        template.opsForValue().set(token.getUsername(),token.getJwt(),20,TimeUnit.SECONDS);
+        template.opsForValue().set(token.getUsername(),token.getJwt(),60,TimeUnit.SECONDS);
         return token;
     }
 

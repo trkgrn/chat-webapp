@@ -22,7 +22,6 @@ export class RegisterComponent implements OnInit {
       name:[null,Validators.required],
       telNumber:[null,Validators.required],
       role:["KULLANICI",Validators.required]
-
     })
   }
 

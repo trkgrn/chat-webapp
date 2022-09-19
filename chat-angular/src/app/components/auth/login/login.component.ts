@@ -21,12 +21,12 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    localStorage.removeItem("token");
   }
 
  async login()
   {
     let resp:any = await this.authService.login(this.form.value).toPromise();
-    let saveToken:any = await this.authService.saveToken(resp.token).toPromise();
     this.router.navigate(["/home"]);
   }
 }

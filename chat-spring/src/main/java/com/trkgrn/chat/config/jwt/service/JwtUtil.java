@@ -26,6 +26,13 @@ public class JwtUtil {
         return extractClaim(token, Claims::getExpiration);
     }
 
+    public long tokenExpiredMinutes(String token){
+        long endTime = extractExpiration(token).getTime();
+        long currentTime = new Date().getTime();
+        long expiryTime = (endTime - currentTime) / (1000 * 60); // Tokenin kalan süresi (dakika cinsinden)
+        return expiryTime;
+    }
+
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
@@ -37,7 +44,7 @@ public class JwtUtil {
     }
 
     // token ın geçerlilik süre doldu mu?
-    private Boolean isTokenExpired(String token) {
+    public Boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
@@ -51,7 +58,7 @@ public class JwtUtil {
         return Jwts.builder().setClaims(claims)
                 .setSubject(subject) // ilgili kullanıcı
                 .setIssuedAt(new Date(System.currentTimeMillis())) // başlangıç
-                .setExpiration(new Date(System.currentTimeMillis() + 5 * 60 * 60 * 1000)) // bitiş
+                .setExpiration(new Date(System.currentTimeMillis() + 60 * 1000)) // bitiş
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY) // kullanılan algoritma ve bu algoritma çalışırken kullanılacak hash key değeri
                 .compact();
     }
