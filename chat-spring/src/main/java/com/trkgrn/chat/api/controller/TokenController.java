@@ -35,9 +35,10 @@ public class TokenController {
     @Autowired
     private UserDetailService userDetailsService;
 
+
     @PostMapping
     public ResponseEntity<?> save(@RequestBody Token token) {
-        return new ResponseEntity<>(tokenService.save(token), HttpStatus.OK);
+        return new ResponseEntity<>(tokenService.save(token,60L), HttpStatus.OK);
     }
 
     @GetMapping("/{username}")

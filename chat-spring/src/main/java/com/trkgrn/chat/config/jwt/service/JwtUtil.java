@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 @Service
@@ -26,10 +27,18 @@ public class JwtUtil {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    public long tokenExpiredMinutes(String token){
+    public long tokenExpiredHours(String token){
         long endTime = extractExpiration(token).getTime();
         long currentTime = new Date().getTime();
-        long expiryTime = (endTime - currentTime) / (1000 * 60); // Tokenin kalan süresi (dakika cinsinden)
+        long expiryTime = TimeUnit.MILLISECONDS.toHours(endTime-currentTime); // Tokenin kalan süresi (dakika cinsinden)
+        return expiryTime;
+    }
+
+
+    public long tokenExpiredSeconds(String token){
+        long endTime = extractExpiration(token).getTime();
+        long currentTime = new Date().getTime();
+        long expiryTime = TimeUnit.MILLISECONDS.toSeconds(endTime-currentTime); // Tokenin kalan süresi (saniye cinsinden)
         return expiryTime;
     }
 
@@ -49,18 +58,22 @@ public class JwtUtil {
     }
 
     // userDetails objesini alır. createToken metoduna gönderir.
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(UserDetails userDetails,Long expireTime) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userDetails.getUsername());
+        return createToken(claims, userDetails.getUsername(),expireTime);
     }
 
-    private String createToken(Map<String, Object> claims, String subject) {
+    private String createToken(Map<String, Object> claims, String subject,Long expireTime) {
         return Jwts.builder().setClaims(claims)
                 .setSubject(subject) // ilgili kullanıcı
                 .setIssuedAt(new Date(System.currentTimeMillis())) // başlangıç
-                .setExpiration(new Date(System.currentTimeMillis() + 60 * 1000)) // bitiş
+                .setExpiration(new Date(System.currentTimeMillis() + TimeUnit.HOURS.toMillis(expireTime))) // bitiş
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY) // kullanılan algoritma ve bu algoritma çalışırken kullanılacak hash key değeri
                 .compact();
+    }
+
+    private void removeToken(){
+
     }
 
     // token hala geçerli mi? kullanıcı adı doğru ise ve token ın geçerlilik süresi devam ediyorsa true döner.

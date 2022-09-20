@@ -19,8 +19,8 @@ public class TokenService implements ITokenService {
     }
 
     @Override
-    public Token save(Token token) {
-        return this.tokenRepository.save(token);
+    public Token save(Token token,Long expiredTime) {
+        return this.tokenRepository.save(token,expiredTime);
     }
 
 

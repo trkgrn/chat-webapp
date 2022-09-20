@@ -4,19 +4,22 @@ import com.trkgrn.chat.api.exception.ExpiredJwtExc;
 import com.trkgrn.chat.api.exception.NullPointerExc;
 import com.trkgrn.chat.api.model.concretes.Token;
 import com.trkgrn.chat.api.service.concretes.TokenService;
+import com.trkgrn.chat.api.service.userdetail.CustomUserDetails;
+import com.trkgrn.chat.api.service.userdetail.UserDetailService;
 import com.trkgrn.chat.config.jwt.service.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Date;
 
 @Component
 public class AuthInterceptor implements HandlerInterceptor {
@@ -28,6 +31,12 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     @Autowired
     private JwtUtil jwtUtil;
+
+    @Autowired
+    private UserDetailService userDetailsService;
+
+    @Value("${jwt.refresh.expire.hours}")
+    Long expireHours;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -46,11 +55,22 @@ public class AuthInterceptor implements HandlerInterceptor {
             }
             System.out.println("Hi");
             if (jwt.equals(tokenObj.getJwt())) { // request headerından gelen token rediste bulunuyor mu?
-                if(jwtUtil.tokenExpiredMinutes(jwt)<30){ // token'ın kalan süresi 30 dakikadan az ise
+                long kalan = jwtUtil.tokenExpiredSeconds(jwt);
+                System.out.println("kalansüre: "+kalan+" expr:"+expireHours);
+                if(kalan<6){ // token'ın kalan süresi 6 saatten az ise
                     //Refresh Token
-                    log.info("Token yenile");
-                    response.setHeader("Deneme","Tarik");
+                    final CustomUserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                    final String refreshJwt = jwtUtil.generateToken(userDetails,expireHours);
+                    // rediste kaydet
+                    tokenService.save(new Token(username,refreshJwt),expireHours);
 
+                    System.out.println("kalansüre: "+kalan+" expr:"+expireHours);
+
+                    log.info("Token yenilendi");
+
+                    response.addHeader("refreshToken",refreshJwt);
+                    response.addHeader("Access-Control-Expose-Headers", "refreshToken");
+                    response.addCookie(new Cookie("test","sago"));
                 }
             }
         }

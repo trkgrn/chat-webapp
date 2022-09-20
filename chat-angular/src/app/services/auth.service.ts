@@ -27,6 +27,7 @@ export class AuthService {
 
   test(){
     return this.httpService.get("user/test");
+
   }
 
 

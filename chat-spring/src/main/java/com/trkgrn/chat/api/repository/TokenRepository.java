@@ -18,8 +18,8 @@ public class TokenRepository {
         this.template = template;
     }
 
-    public Token save(Token token){
-        template.opsForValue().set(token.getUsername(),token.getJwt(),60,TimeUnit.SECONDS);
+    public Token save(Token token,Long expiredTime){
+        template.opsForValue().set(token.getUsername(),token.getJwt(),expiredTime,TimeUnit.HOURS);
         return token;
     }
 

@@ -11,6 +11,7 @@ import com.trkgrn.chat.api.service.userdetail.UserDetailService;
 import com.trkgrn.chat.config.jwt.model.AuthRequest;
 import com.trkgrn.chat.config.jwt.service.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +42,8 @@ public class AuthController {
     @Autowired
     private TokenService tokenService;
 
-
+    @Value("${jwt.login.expire.hours}")
+    Long expireHours;
 
     @PostMapping("/login")
     public ResponseEntity<Response> login(@RequestBody AuthRequest authRequest) throws Exception {
@@ -51,10 +53,10 @@ public class AuthController {
             throw new Exception("Incorret username or password", ex);
         }
         final CustomUserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.getUsername());
-        final String jwt = jwtUtil.generateToken(userDetails);
+        final String jwt = jwtUtil.generateToken(userDetails,expireHours);
 
         // rediste 10 dk kaydet
-            tokenService.save(new Token(authRequest.getUsername(),jwt));
+            tokenService.save(new Token(authRequest.getUsername(),jwt),expireHours);
             
 
         return new ResponseEntity<Response>(new Response(jwt, userDetails.getRole(), userDetails.getId()), HttpStatus.OK);
