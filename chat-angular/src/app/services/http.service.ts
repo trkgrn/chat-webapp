@@ -21,10 +21,6 @@ export class HttpService {
   }
   post(url:any, body:any): any {
     return this.http.post(environment.baseUrl + url, body).toPromise()
-      .then((res:any)=>{
-        if(res.refreshToken)
-          localStorage.setItem("token",res.refreshToken);
-      });
   }
 
   patch(url:any, body:any): any {

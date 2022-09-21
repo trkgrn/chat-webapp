@@ -55,16 +55,15 @@ public class AuthInterceptor implements HandlerInterceptor {
             }
             System.out.println("Hi");
             if (jwt.equals(tokenObj.getJwt())) { // request headerından gelen token rediste bulunuyor mu?
-                long kalan = jwtUtil.tokenExpiredSeconds(jwt);
-                System.out.println("kalansüre: "+kalan+" expr:"+expireHours);
-                if(kalan<6){ // token'ın kalan süresi 6 saatten az ise
+                System.out.println("kalansüre: "+jwtUtil.tokenExpiredHours(jwt)+" expr:"+expireHours);
+                if(jwtUtil.tokenExpiredHours(jwt) < 6L){ // token'ın kalan süresi 6 saatten az ise
                     //Refresh Token
                     final CustomUserDetails userDetails = userDetailsService.loadUserByUsername(username);
                     final String refreshJwt = jwtUtil.generateToken(userDetails,expireHours);
                     // rediste kaydet
                     tokenService.save(new Token(username,refreshJwt),expireHours);
 
-                    System.out.println("kalansüre: "+kalan+" expr:"+expireHours);
+                    System.out.println("kalansüre: "+jwtUtil.tokenExpiredHours(jwt)+" expr:"+expireHours);
 
                     log.info("Token yenilendi");
 

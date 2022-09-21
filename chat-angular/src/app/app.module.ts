@@ -20,13 +20,21 @@ import {MessageService} from "primeng/api";
 import { HomeComponent } from './components/home/home.component';
 import {HttpService} from "./services/http.service";
 import {JwtInterceptor} from "./JwtInterceptor";
+import { UnauthorizedComponent } from './components/error/unauthorized/unauthorized.component';
+import { ForbiddenComponent } from './components/error/forbidden/forbidden.component';
+import { NotfoundComponent } from './components/error/notfound/notfound.component';
+import { TestComponent } from './components/test/test.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     RegisterComponent,
-    HomeComponent
+    HomeComponent,
+    UnauthorizedComponent,
+    ForbiddenComponent,
+    NotfoundComponent,
+    TestComponent
   ],
   imports: [
     BrowserModule,

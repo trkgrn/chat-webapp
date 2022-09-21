@@ -36,6 +36,11 @@ export class AuthService {
     this.router.navigateByUrl('login');
   }
 
+  unauthorized() {
+    localStorage.removeItem('token');
+    this.router.navigateByUrl('unauthorized');
+  }
+
   isUserSignedin() {
     return localStorage.getItem('token') !== null;
   }
