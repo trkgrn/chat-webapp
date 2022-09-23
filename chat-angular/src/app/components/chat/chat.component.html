@@ -1,0 +1,100 @@
+<div class="surface-0 flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden">
+  <div class="grid justify-content-center p-2 lg:p-0" style="min-width:80%">
+    <div class="container-fluid h-50">
+      <div class="row justify-content-center h-100">
+        <div class="col-md-4 col-xl-3 chat">
+          <div class="card mb-sm-3 mb-md-0 contacts_card">
+            <div class="card-header">
+              <div class="input-group">
+                <input type="text" placeholder="Ara..." name="" class="form-control search">
+                <div class="input-group-prepend">
+                  <span class="input-group-text search_btn"><i class="fas fa-search"></i></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-body contacts_body">
+              <ul class="contacts">
+                <li class="active">
+                  <div class="d-flex bd-highlight">
+                    <div class="img_cont">
+                      <img src="https://therichpost.com/wp-content/uploads/2020/06/avatar2.png"
+                           class="rounded-circle user_img">
+                      <span class="online_icon"></span>
+                    </div>
+                    <div class="user_info">
+                      <span>{{destinationUser?.username}}</span>
+                      <p>Kalid is online</p>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+            <div class="card-footer"></div>
+          </div>
+        </div>
+        <div class="col-md-8 col-xl-6 chat">
+          <div class="card">
+            <div class="card-header msg_head">
+              <div class="d-flex bd-highlight">
+                <div class="img_cont">
+                  <img src="https://therichpost.com/wp-content/uploads/2020/06/avatar2.png"
+                       class="rounded-circle user_img">
+                  <span class="online_icon"></span>
+                </div>
+                <div class="user_info">
+                  <span>Chat with {{destinationUser?.username}}</span>
+                </div>
+              </div>
+            </div>
+            <div #chat id="chat" class="card-body msg_card_body">
+
+              <div *ngFor="let msg of messages | async">
+                <div class="d-flex justify-content-start mb-4"
+                     *ngIf="msg.sender === destinationUser!.username; else originUserMessage">
+                  <div class="img_cont_msg">
+                    <img src="https://therichpost.com/wp-content/uploads/2020/06/avatar2.png"
+                         class="rounded-circle user_img_msg">
+                  </div>
+                  <div class="msg_cotainer">
+                    {{ msg.content }}
+                    <span class="msg_time">{{whenWasItPublished(msg.t_stamp)}}</span>
+                  </div>
+                </div>
+
+
+              <ng-template #originUserMessage>
+                <div class="d-flex justify-content-end mb-4">
+                  <div class="msg_cotainer_send">
+                    {{msg.content}}
+                    <span class="msg_time_send">{{whenWasItPublished(msg.t_stamp)}}</span>
+                  </div>
+                  <div class="img_cont_msg">
+                    <img src="https://therichpost.com/wp-content/uploads/2020/06/avatar2.png"
+                         class="rounded-circle user_img_msg">
+                  </div>
+                </div>
+              </ng-template>
+            </div>
+            </div>
+            <div class="card-footer">
+              <div class="input-group">
+                <div class="input-group-append">
+                  <span class="input-group-text attach_btn"></span>
+                </div>
+                <textarea  [formControl]="newMessage" name="" class="form-control type_msg" placeholder="Mesaj...">
+                </textarea>
+                <div class="input-group-append">
+                  <span (click)="sendMsg()" class="input-group-text send_btn"><i class="fas fa-location-arrow"></i></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+

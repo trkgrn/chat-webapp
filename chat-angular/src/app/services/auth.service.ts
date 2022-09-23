@@ -4,6 +4,7 @@ import {map, Observable} from "rxjs";
 import {Router} from "@angular/router";
 import {User} from "../model/user";
 import {HttpService} from "./http.service";
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -45,9 +46,9 @@ export class AuthService {
     return localStorage.getItem('token') !== null;
   }
 
-  // getUsername() {
-  //   return localStorage.getItem('token') as string;
-  // }
+   getUser():any {
+   return this.http.get<User>(environment.baseUrl+"token/values/"+this.getToken());
+   }
 
   getToken() {
     return localStorage.getItem('token') as string;
@@ -92,11 +93,6 @@ export class AuthService {
 
   register(user: any) {
     return this.http.post<User>(this.authURL + "register", user);
-  }
-
-  getUser(name: string) {
-    const headers = new HttpHeaders({'Authorization': 'Bearer ' + this.getToken()})
-    return this.http.get(this.authURL + "getUser?username=" + name, {headers});
   }
 
   getAllUser() {

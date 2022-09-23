@@ -24,6 +24,7 @@ import { UnauthorizedComponent } from './components/error/unauthorized/unauthori
 import { ForbiddenComponent } from './components/error/forbidden/forbidden.component';
 import { NotfoundComponent } from './components/error/notfound/notfound.component';
 import { TestComponent } from './components/test/test.component';
+import { ChatComponent } from './components/chat/chat.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { TestComponent } from './components/test/test.component';
     UnauthorizedComponent,
     ForbiddenComponent,
     NotfoundComponent,
-    TestComponent
+    TestComponent,
+    ChatComponent
   ],
   imports: [
     BrowserModule,
