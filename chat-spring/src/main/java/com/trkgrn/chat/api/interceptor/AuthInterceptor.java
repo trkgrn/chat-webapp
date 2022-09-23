@@ -10,9 +10,7 @@ import com.trkgrn.chat.config.jwt.service.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -26,17 +24,20 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     private static Logger log = LoggerFactory.getLogger(AuthInterceptor.class);
 
-    @Autowired
-    private TokenService tokenService;
+    private final TokenService tokenService;
 
-    @Autowired
-    private JwtUtil jwtUtil;
+    private final JwtUtil jwtUtil;
 
-    @Autowired
-    private UserDetailService userDetailsService;
+    private final UserDetailService userDetailsService;
 
     @Value("${jwt.refresh.expire.hours}")
     Long expireHours;
+
+    public AuthInterceptor(TokenService tokenService, JwtUtil jwtUtil, UserDetailService userDetailsService) {
+        this.tokenService = tokenService;
+        this.jwtUtil = jwtUtil;
+        this.userDetailsService = userDetailsService;
+    }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -71,6 +72,10 @@ public class AuthInterceptor implements HandlerInterceptor {
                     response.addHeader("Access-Control-Expose-Headers", "refreshToken");
                     response.addCookie(new Cookie("test","sago"));
                 }
+            }
+            else{
+                response.setStatus(401);
+                return false;
             }
         }
         return true;

@@ -5,6 +5,7 @@ import com.trkgrn.chat.api.exception.NotFoundExc;
 import com.trkgrn.chat.api.exception.NullPointerExc;
 import com.trkgrn.chat.api.model.concretes.Token;
 import com.trkgrn.chat.api.model.concretes.User;
+import com.trkgrn.chat.api.model.dtos.UserDto;
 import com.trkgrn.chat.api.service.concretes.TokenService;
 import com.trkgrn.chat.api.service.userdetail.CustomUserDetails;
 import com.trkgrn.chat.api.service.userdetail.UserDetailService;
@@ -16,6 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -63,7 +67,7 @@ public class TokenController {
         } catch (ExpiredJwtException e) {
             throw new ExpiredJwtExc("Oturum süresi sona erdi.");
         }
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(new UserDto(user.getUsername(),user.getName(),user.getRole(),user.getMail(),user.getTelNumber(),user.getUserId()));
     }
 
     @DeleteMapping("/{username}")

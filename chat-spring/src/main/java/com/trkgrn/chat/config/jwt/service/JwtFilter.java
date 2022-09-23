@@ -42,8 +42,8 @@ public class JwtFilter extends OncePerRequestFilter {
                 jwt = authHeader.substring(7);
                 username = jwtUtil.extractUsername(jwt);
             }
-            catch (ExpiredJwtException e){
-                sendError(response,e);
+            catch (Exception e){
+                sendError(response);
                 return;
             }
         }
@@ -60,14 +60,8 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
 
-    private void sendError(HttpServletResponse res, Exception e) throws IOException {
+    private void sendError(HttpServletResponse res) throws IOException {
         res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         res.setContentType("application/json");
-        PrintWriter out = res.getWriter();
-        Map<String, String> errors = new HashMap<>();
-        ObjectMapper mapper = new ObjectMapper();
-        errors.put("error", e.getMessage());
-        out.print(mapper.writeValueAsString(errors));
-        out.flush();
     }
 }

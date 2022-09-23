@@ -1,6 +1,5 @@
 package com.trkgrn.chat.config;
 
-import com.trkgrn.chat.api.model.concretes.Token;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
