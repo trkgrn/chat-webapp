@@ -1,19 +1,18 @@
 package com.trkgrn.chat.api.model.dtos;
 
+import com.trkgrn.chat.api.model.concretes.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 @ToString
-public class UserDto {
-    private String username;
+public class ChatDto {
+    private Long chatId;
     private String name;
-    private String role;
-    private String mail;
-    private String telNumber;
-    private Long userId;
+    private UserDto origin;
+    private UserDto destination;
 }

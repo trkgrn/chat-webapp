@@ -18,7 +18,8 @@ const routes: Routes = [
   {path:"forbidden",component:ForbiddenComponent},
   {path:"notfound",component:NotfoundComponent},
   {path:"test",component:TestComponent,canActivate:[LoginGuard],data:{roles: ['Deneme']}},
-  {path:"chat",component:ChatComponent},
+  {path:"chat/t/:chatName",component:ChatComponent},
+  {path:"chat/inbox",component:ChatComponent},
   {path:"**",redirectTo:"notfound",pathMatch:"full"}
 ];
 

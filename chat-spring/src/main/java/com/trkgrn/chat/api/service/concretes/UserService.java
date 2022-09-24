@@ -3,6 +3,7 @@ package com.trkgrn.chat.api.service.concretes;
 import com.trkgrn.chat.api.model.concretes.User;
 import com.trkgrn.chat.api.repository.UserRepository;
 import com.trkgrn.chat.api.service.abstracts.IUserService;
+import com.trkgrn.chat.config.jwt.service.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,9 +15,12 @@ public class UserService implements IUserService {
 
     private final UserRepository userRepository;
 
+    private final JwtUtil jwtUtil;
+
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
+        this.jwtUtil = jwtUtil;
     }
 
     @Override
@@ -34,5 +38,9 @@ public class UserService implements IUserService {
     @Override
     public List<User> getAllUser() {
         return this.userRepository.findAll();
+    }
+
+    public User findUserByToken(String token){
+        return this.findByUserName(jwtUtil.extractUsername(token));
     }
 }

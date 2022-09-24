@@ -12,30 +12,57 @@
                 </div>
               </div>
             </div>
+            <div *ngFor="let chat of chats">
+              <div class="card-body contacts_body" id="leftsideMenu">
+                <ul class="contacts">
+                  <li >
+                    <a href="/chat/t/{{chat.name}}">
+                      <div class="d-flex bd-highlight">
+                        <div class="img_cont">
+                          <img src="https://therichpost.com/wp-content/uploads/2020/06/avatar2.png"
+                               class="rounded-circle user_img">
+                          <span class="online_icon"></span>
+                        </div>
+                        <div class="user_info">
+                          <span>{{getDestinationUser(chat).username}}</span>
+                          <p>{{getDestinationUser(chat).username}} is online</p>
+                        </div>
+                      </div>
+                    </a>
 
-            <div class="card-body contacts_body">
-              <ul class="contacts">
-                <li class="active">
-                  <div class="d-flex bd-highlight">
-                    <div class="img_cont">
-                      <img src="https://therichpost.com/wp-content/uploads/2020/06/avatar2.png"
-                           class="rounded-circle user_img">
-                      <span class="online_icon"></span>
-                    </div>
-                    <div class="user_info">
-                      <span>{{destinationUser?.username}}</span>
-                      <p>Kalid is online</p>
-                    </div>
-                  </div>
-                </li>
-              </ul>
+                  </li>
+                </ul>
+              </div>
             </div>
 
             <div class="card-footer"></div>
           </div>
         </div>
         <div class="col-md-8 col-xl-6 chat">
-          <div class="card">
+          <div *ngIf="!displayChat" class="card">
+            <div class="chat-inbox">
+              <svg aria-label="Direct" class="_ab6-" color="#262626" fill="#262626" height="96" role="img"
+                   viewBox="0 0 96 96" width="96">
+                <circle cx="48" cy="48" fill="none" r="47" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2"></circle>
+                <line fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="2" x1="69.286"
+                      x2="41.447" y1="33.21" y2="48.804"></line>
+                <polygon fill="none" points="47.254 73.123 71.376 31.998 24.546 32.002 41.448 48.805 47.254 73.123"
+                         stroke="currentColor" stroke-linejoin="round" stroke-width="2"></polygon>
+              </svg>
+              <div>
+                <h2>Mesajların</h2>
+              </div>
+              <div>
+                <div>Bir arkadaşına mesaj gönder.</div>
+              </div>
+              <!--                  <div>-->
+              <!--                    <button pButton type="button">Mesaj Gönder</button>-->
+              <!--                  </div>-->
+            </div>
+          </div>
+
+          <div *ngIf="displayChat" class="card">
             <div class="card-header msg_head">
               <div class="d-flex bd-highlight">
                 <div class="img_cont">
@@ -64,33 +91,36 @@
                 </div>
 
 
-              <ng-template #originUserMessage>
-                <div class="d-flex justify-content-end mb-4">
-                  <div class="msg_cotainer_send">
-                    {{msg.content}}
-                    <span class="msg_time_send">{{whenWasItPublished(msg.t_stamp)}}</span>
+                <ng-template #originUserMessage>
+                  <div class="d-flex justify-content-end mb-4">
+                    <div class="msg_cotainer_send">
+                      {{msg.content}}
+                      <span class="msg_time_send">{{whenWasItPublished(msg.t_stamp)}}</span>
+                    </div>
+                    <div class="img_cont_msg">
+                      <img src="https://therichpost.com/wp-content/uploads/2020/06/avatar2.png"
+                           class="rounded-circle user_img_msg">
+                    </div>
                   </div>
-                  <div class="img_cont_msg">
-                    <img src="https://therichpost.com/wp-content/uploads/2020/06/avatar2.png"
-                         class="rounded-circle user_img_msg">
-                  </div>
-                </div>
-              </ng-template>
-            </div>
+                </ng-template>
+              </div>
             </div>
             <div class="card-footer">
               <div class="input-group">
                 <div class="input-group-append">
                   <span class="input-group-text attach_btn"></span>
                 </div>
-                <textarea  [formControl]="newMessage" name="" class="form-control type_msg" placeholder="Mesaj...">
+                <textarea [formControl]="newMessage" name="" class="form-control type_msg" placeholder="Mesaj...">
                 </textarea>
                 <div class="input-group-append">
-                  <span (click)="sendMsg()" class="input-group-text send_btn"><i class="fas fa-location-arrow"></i></span>
+                  <span (click)="sendMsg()" class="input-group-text send_btn"><i
+                    class="fas fa-location-arrow"></i></span>
                 </div>
               </div>
             </div>
           </div>
+
+
         </div>
       </div>
     </div>

@@ -17,8 +17,16 @@ public class Chat {
     @Id
     @Column(name = "chat_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long chatId;
 
     @Column(name = "chat_name")
     private String name;
+
+    @OneToOne
+    @JoinColumn(name = "origin_id",referencedColumnName = "user_id")
+    private User origin;
+
+    @OneToOne
+    @JoinColumn(name = "destination_id",referencedColumnName = "user_id")
+    private User destination;
 }

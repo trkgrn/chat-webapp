@@ -24,25 +24,71 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   stompClient?: Stomp.Client;
   newMessage = new FormControl('');
   messages?: Observable<Array<Message>>;
+  chats?:Array<any>;
+
+  displayChat: boolean = false;
 
   constructor(private authService: AuthService, private chatService: ChatService,
               private el: ElementRef, private route: ActivatedRoute) {
   }
 
   ngOnInit() {
-    this.authService.getUser().subscribe((res: any) => {
+
+    this.route.params.subscribe((params:any)=>{
+      this.chatInit()
+     if(params.chatName){
+       this.messagesInit()
+       this.showChat()
+     }
+     else{
+       this.hiddenChat()
+     }
+   });
+  }
+
+  showChat(){
+    this.displayChat = true;
+  }
+
+  hiddenChat(){
+    this.displayChat = false;
+  }
+
+  getDestinationUser(chat:any){
+    if(chat.origin.username==this.originUser.username){
+      return chat.destination;
+    }
+    return chat.origin;
+  }
+
+  chatInit(){
+    this.authService.getUser().subscribe((r:any)=> {
+      this.originUser = r
+      console.log("usr")
+      console.log(this.originUser)
+    })
+    this.chatService.getChats("getChats/").subscribe((r:any)=> {
+      this.chats = r
+      console.log("CHATLER")
+      console.log(this.chats)
+    })
+
+  }
+
+  messagesInit(){
+   this.authService.getUser().subscribe((res: any) => {
       this.originUser = res;
-      console.log(this.originUser.id)
-      if (this.originUser.id == 1) {
+      console.log(this.originUser.userId)
+      if (this.originUser.userId == 1) {
         console.log("a")
         var user = new User();
-        user.id = 2;
+        user.userId = 2;
         user.username = "abc"
         this.destinationUser = user;
         console.log("b")
       } else {
         var user = new User();
-        user.id = 1;
+        user.userId = 1;
         user.username = "trkgrn"
         this.destinationUser = user;
       }
@@ -51,11 +97,11 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       console.log(this.el)
       this.el.nativeElement.querySelector("#chat").scrollIntoView();
     });
-
   }
 
   ngAfterViewChecked(): void {
-    this.scrollDown();
+    if(this.displayChat)
+      this.scrollDown();
   }
 
   scrollDown() {
@@ -65,11 +111,11 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
 
   connectToChat() {
-    const id1 = this.originUser.id!;
+    const id1 = this.originUser.userId!;
     const nick1 = this.originUser.username;
-    const id2 = this.destinationUser?.id!;
+    const id2 = this.destinationUser?.userId!;
     const nick2 = this.destinationUser?.username!;
-
+    console.log("Username: " + this.originUser.username)
     if (id1 > id2) {
       this.channelName = nick1 + '&' + nick2;
     } else {
@@ -98,9 +144,10 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     this.messages = this.chatService.getMessages('getMessages', this.channelName)
     this.messages.subscribe(data => {
       let mgs: Array<Message> = data;
-      mgs.sort((a, b) => (a.id > b.id) ? 1 : -1)
+      mgs.sort((a, b) => (a.messageId > b.messageId) ? 1 : -1)
       this.messages = of(mgs);
     })
+    console.log("MESAJLAR")
     console.log(this.messages);
   }
 
