@@ -1,12 +1,10 @@
 package com.trkgrn.chat.config;
 
 import com.trkgrn.chat.api.interceptor.AuthInterceptor;
-import com.trkgrn.chat.config.jwt.service.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration

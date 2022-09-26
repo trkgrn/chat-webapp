@@ -6,7 +6,8 @@
           <div class="card mb-sm-3 mb-md-0 contacts_card">
             <div class="card-header">
               <div class="input-group">
-                <input type="text" placeholder="Ara..." name="" class="form-control search">
+                <input type="text" placeholder="Ara..." name="" [(ngModel)]="filter" (change)="onChange()"
+                       class="form-control search">
                 <div class="input-group-prepend">
                   <span class="input-group-text search_btn"><i class="fas fa-search"></i></span>
                 </div>
@@ -15,7 +16,7 @@
             <div *ngFor="let chat of chats">
               <div class="card-body contacts_body" id="leftsideMenu">
                 <ul class="contacts">
-                  <li >
+                  <li>
                     <a href="/chat/t/{{chat.name}}">
                       <div class="d-flex bd-highlight">
                         <div class="img_cont">
@@ -40,7 +41,7 @@
         </div>
         <div class="col-md-8 col-xl-6 chat">
           <div *ngIf="!displayChat" class="card">
-            <div class="chat-inbox">
+            <div class="chat-inbox mt-6">
               <svg aria-label="Direct" class="_ab6-" color="#262626" fill="#262626" height="96" role="img"
                    viewBox="0 0 96 96" width="96">
                 <circle cx="48" cy="48" fill="none" r="47" stroke="currentColor" stroke-linecap="round"
@@ -56,9 +57,9 @@
               <div>
                 <div>Bir arkadaşına mesaj gönder.</div>
               </div>
-              <!--                  <div>-->
-              <!--                    <button pButton type="button">Mesaj Gönder</button>-->
-              <!--                  </div>-->
+              <div class="mt-4">
+                <button pButton (click)="addFriendPage()" type="button">Arkadaş Ekle</button>
+              </div>
             </div>
           </div>
 
@@ -128,3 +129,39 @@
   </div>
 </div>
 
+<p-dialog header="Arkadaş Ekle" [style]="{width: '30%',height:'100%'}" [draggable]="false" [resizable]="false" [modal]="true" [(visible)]="displayAddFriend">
+  <div class="field col-12 md:col-4 mt-4">
+        <span class="p-float-label p-input-icon-left">
+            <i class="pi pi-search"></i>
+            <input type="text" id="inputtext-left" pInputText [(ngModel)]="friendSearch" (ngModelChange)="findCandidateFriends()">
+            <label for="inputtext-left">Kullanıcı Adı</label>
+        </span>
+  </div>
+
+  <p-table [value]="searchResult" responsiveLayout="scroll" [rowHover]="true">
+    <ng-template pTemplate="caption">
+      <div class="table-header">
+        Arama sonucu
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Kullanıcı Adı</th>
+        <th>Ad-Soyad</th>
+        <th>E-Mail</th>
+        <th></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-user>
+      <tr>
+        <td>{{user.username}}</td>
+        <td>{{user.name}}</td>
+        <td>{{user.mail}}</td>
+        <td>
+          <button style="margin-right: 1mm" pButton pRipple icon="pi pi-user"
+                  class="p-button-rounded p-button-success" (click)="addFriendPage()"></button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</p-dialog>

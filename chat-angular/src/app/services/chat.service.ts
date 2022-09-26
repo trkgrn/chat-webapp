@@ -19,5 +19,9 @@ export class ChatService {
     return  this.http.get(environment.baseUrl+url+this.authService.getToken());
   }
 
+  getCandidateFriendsByUsername(username:any){
+    return this.httpService.get("user/searchCandidateFriendsByUsername?token="+this.authService.getToken()+"&username="+username);
+  }
+
 
 }

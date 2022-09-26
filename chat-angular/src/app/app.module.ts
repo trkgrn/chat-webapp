@@ -25,6 +25,8 @@ import { ForbiddenComponent } from './components/error/forbidden/forbidden.compo
 import { NotfoundComponent } from './components/error/notfound/notfound.component';
 import { TestComponent } from './components/test/test.component';
 import { ChatComponent } from './components/chat/chat.component';
+import {DialogModule} from "primeng/dialog";
+import {TableModule} from "primeng/table";
 
 @NgModule({
   declarations: [
@@ -38,20 +40,22 @@ import { ChatComponent } from './components/chat/chat.component';
     TestComponent,
     ChatComponent
   ],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    AppRoutingModule,
-    PasswordModule,
-    CheckboxModule,
-    FormsModule,
-    ButtonModule,
-    RippleModule,
-    InputTextModule,
-    ReactiveFormsModule,
-    HttpClientModule,
-    ToastModule
-  ],
+    imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
+        AppRoutingModule,
+        PasswordModule,
+        CheckboxModule,
+        FormsModule,
+        ButtonModule,
+        RippleModule,
+        InputTextModule,
+        ReactiveFormsModule,
+        HttpClientModule,
+        ToastModule,
+        DialogModule,
+        TableModule
+    ],
   providers: [AuthService,LoginGuard,MessageService,HttpService,
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },],
   bootstrap: [AppComponent]

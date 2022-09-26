@@ -25,8 +25,12 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   newMessage = new FormControl('');
   messages?: Observable<Array<Message>>;
   chats?:Array<any>;
+  filter:any;
+  friendSearch:any;
+  searchResult:Array<any> = [];
 
   displayChat: boolean = false;
+  displayAddFriend:boolean = false;
 
   constructor(private authService: AuthService, private chatService: ChatService,
               private el: ElementRef, private route: ActivatedRoute) {
@@ -44,6 +48,24 @@ export class ChatComponent implements OnInit, AfterViewChecked {
        this.hiddenChat()
      }
    });
+  }
+
+  onChange(){
+    console.log(this.filter);
+  }
+
+  addFriend(selectedUser:any){
+  }
+
+ async findCandidateFriends(){
+  console.log(this.friendSearch)
+   var temp:any = await this.chatService.getCandidateFriendsByUsername(this.friendSearch);
+  this.searchResult = temp;
+  console.log(this.searchResult);
+  }
+
+  addFriendPage(){
+  this.displayAddFriend = true;
   }
 
   showChat(){
