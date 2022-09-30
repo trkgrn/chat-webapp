@@ -19,8 +19,14 @@ export class ChatService {
     return  this.http.get(environment.baseUrl+url+this.authService.getToken());
   }
 
-  getCandidateFriendsByUsername(username:any){
-    return this.httpService.get("user/searchCandidateFriendsByUsername?token="+this.authService.getToken()+"&username="+username);
+  getCandidateFriendsByUsername(username:any,pageNo:any,pageSize:any){
+    return this.httpService.get("user/searchCandidateFriendsByUsername?token="+this.authService.getToken()
+      +"&username="+username+"&pageNo="+pageNo+"&pageSize="+pageSize);
+  }
+
+  addFriend(origin:any,destination:any){
+    var friend = {friender:origin,friended:destination};
+    return this.httpService.post("addFriend",friend);
   }
 
 

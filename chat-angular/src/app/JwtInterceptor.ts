@@ -41,7 +41,6 @@ export class JwtInterceptor implements HttpInterceptor {
           if (err.status == 401) {
             this.authService.unauthorized();
           }
-
         }
       }));
 

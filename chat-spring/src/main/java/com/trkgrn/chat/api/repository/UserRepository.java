@@ -1,6 +1,7 @@
 package com.trkgrn.chat.api.repository;
 
 import com.trkgrn.chat.api.model.concretes.User;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -35,6 +36,6 @@ public interface UserRepository extends JpaRepository<User,Long> {
                    " SELECT f.friender_id" +
                    "   FROM friend f" +
                    "   WHERE f.friended_id=:#{#userId})")
-   public List<User> searchCandidateFriendByUserIdAndUsername(Long userId,String username);
+   public List<User> searchCandidateFriendByUserIdAndUsername(Long userId, String username, Pageable pageable);
 
 }

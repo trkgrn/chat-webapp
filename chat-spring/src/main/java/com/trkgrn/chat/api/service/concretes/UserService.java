@@ -4,6 +4,8 @@ import com.trkgrn.chat.api.model.concretes.User;
 import com.trkgrn.chat.api.repository.UserRepository;
 import com.trkgrn.chat.config.jwt.service.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +46,8 @@ public class UserService {
         return this.userRepository.searchCandidateFriendByUserId(userId);
     }
 
-    public List<User> searchCandidateFriendByUserIdAndUsername(Long userId,String username){
-        return this.userRepository.searchCandidateFriendByUserIdAndUsername(userId,username);
+    public List<User> searchCandidateFriendByUserIdAndUsername(Long userId,String username,int pageNo,int pageSize){
+        Pageable pageable = PageRequest.of(pageNo,pageSize);
+        return this.userRepository.searchCandidateFriendByUserIdAndUsername(userId,username,pageable);
     }
 }

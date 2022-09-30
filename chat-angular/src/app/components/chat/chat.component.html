@@ -5,13 +5,14 @@
         <div class="col-md-4 col-xl-3 chat">
           <div class="card mb-sm-3 mb-md-0 contacts_card">
             <div class="card-header">
-              <div class="input-group">
-                <input type="text" placeholder="Ara..." name="" [(ngModel)]="filter" (change)="onChange()"
-                       class="form-control search">
-                <div class="input-group-prepend">
-                  <span class="input-group-text search_btn"><i class="fas fa-search"></i></span>
-                </div>
-              </div>
+<!--              <div class="input-group">-->
+<!--                <input type="text" placeholder="Ara..." name="" [(ngModel)]="filter"-->
+<!--                       class="form-control search">-->
+<!--                <div class="input-group-prepend">-->
+<!--                  <span class="input-group-text search_btn"><i class="fas fa-search"></i></span>-->
+<!--                </div>-->
+<!--              </div>-->
+              <button type="button" class="btn btn-primary btn-block" (click)="addFriendPage()">Arkadaş Ekle</button>
             </div>
             <div *ngFor="let chat of chats">
               <div class="card-body contacts_body" id="leftsideMenu">
@@ -30,7 +31,6 @@
                         </div>
                       </div>
                     </a>
-
                   </li>
                 </ul>
               </div>
@@ -58,7 +58,7 @@
                 <div>Bir arkadaşına mesaj gönder.</div>
               </div>
               <div class="mt-4">
-                <button pButton (click)="addFriendPage()" type="button">Arkadaş Ekle</button>
+                <button class="btn btn-primary" (click)="addFriendPage()" type="button">Arkadaş Ekle</button>
               </div>
             </div>
           </div>
@@ -72,7 +72,7 @@
                   <span class="online_icon"></span>
                 </div>
                 <div class="user_info">
-                  <span>Chat with {{destinationUser?.username}}</span>
+                  <span>Chat with {{destinationUser?.name}}</span>
                 </div>
               </div>
             </div>
@@ -129,7 +129,8 @@
   </div>
 </div>
 
-<p-dialog header="Arkadaş Ekle" [style]="{width: '30%',height:'100%'}" [draggable]="false" [resizable]="false" [modal]="true" [(visible)]="displayAddFriend">
+<p-dialog header="Arkadaş Ekle" [style]="{width: '60%',height:'100%'}" [draggable]="false" [resizable]="false" [modal]="true"
+          [(visible)]="displayAddFriend">
   <div class="field col-12 md:col-4 mt-4">
         <span class="p-float-label p-input-icon-left">
             <i class="pi pi-search"></i>
@@ -159,9 +160,10 @@
         <td>{{user.mail}}</td>
         <td>
           <button style="margin-right: 1mm" pButton pRipple icon="pi pi-user"
-                  class="p-button-rounded p-button-success" (click)="addFriendPage()"></button>
+                  class="p-button-rounded p-button-success" (click)="addFriend(user)"></button>
         </td>
       </tr>
     </ng-template>
   </p-table>
+
 </p-dialog>

@@ -17,20 +17,20 @@ import {Message} from "../../model/message";
   styleUrls: ['./chat.component.scss']
 })
 export class ChatComponent implements OnInit, AfterViewChecked {
-  destinationUser?: User;
+  destinationUser?: any;
   originUser: any;
   channelName?: string;
   socket?: WebSocket;
   stompClient?: Stomp.Client;
   newMessage = new FormControl('');
   messages?: Observable<Array<Message>>;
-  chats?:Array<any>;
-  filter:any;
-  friendSearch:any;
-  searchResult:Array<any> = [];
+  chats?: Array<any>;
+  filter: any;
+  friendSearch: any;
+  searchResult: Array<any> = [];
 
   displayChat: boolean = false;
-  displayAddFriend:boolean = false;
+  displayAddFriend: boolean = false;
 
   constructor(private authService: AuthService, private chatService: ChatService,
               private el: ElementRef, private route: ActivatedRoute) {
@@ -38,91 +38,90 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
   ngOnInit() {
 
-    this.route.params.subscribe((params:any)=>{
+    this.route.params.subscribe((params: any) => {
       this.chatInit()
-     if(params.chatName){
-       this.messagesInit()
-       this.showChat()
-     }
-     else{
-       this.hiddenChat()
-     }
-   });
+      if (params.chatName) {
+        this.messagesInit()
+        this.showChat()
+      } else {
+        this.hiddenChat()
+      }
+    });
   }
 
-  onChange(){
-    console.log(this.filter);
+
+  async addFriend(selectedUser: any) {
+    var origin: any = await this.authService.getUser().toPromise();
+    var friend: any = await this.chatService.addFriend(origin, selectedUser);
+    var temp: any = await this.chatService.getCandidateFriendsByUsername(this.friendSearch, 0, 5);
+    this.searchResult = temp;
+    var chat: any = await this.chatService.getChats("getChats/").toPromise();
+    this.chats = chat;
   }
 
-  addFriend(selectedUser:any){
+  async findCandidateFriends() {
+    if (this.friendSearch != "") {
+      var temp: any = await this.chatService.getCandidateFriendsByUsername(this.friendSearch, 0, 5);
+      this.searchResult = temp;
+    }
+
   }
 
- async findCandidateFriends(){
-  console.log(this.friendSearch)
-   var temp:any = await this.chatService.getCandidateFriendsByUsername(this.friendSearch);
-  this.searchResult = temp;
-  console.log(this.searchResult);
+  addFriendPage() {
+    this.displayAddFriend = true;
   }
 
-  addFriendPage(){
-  this.displayAddFriend = true;
-  }
-
-  showChat(){
+  showChat() {
     this.displayChat = true;
   }
 
-  hiddenChat(){
+  hiddenChat() {
     this.displayChat = false;
   }
 
-  getDestinationUser(chat:any){
-    if(chat.origin.username==this.originUser.username){
+  getDestinationUser(chat: any) {
+    if (chat.origin.username == this.originUser.username) {
       return chat.destination;
     }
     return chat.origin;
   }
 
-  chatInit(){
-    this.authService.getUser().subscribe((r:any)=> {
+  chatInit() {
+    this.authService.getUser().subscribe((r: any) => {
       this.originUser = r
-      console.log("usr")
-      console.log(this.originUser)
     })
-    this.chatService.getChats("getChats/").subscribe((r:any)=> {
+    this.chatService.getChats("getChats/").subscribe((r: any) => {
       this.chats = r
-      console.log("CHATLER")
-      console.log(this.chats)
     })
 
   }
 
-  messagesInit(){
-   this.authService.getUser().subscribe((res: any) => {
+  messagesInit() {
+    this.authService.getUser().subscribe((res: any) => {
       this.originUser = res;
-      console.log(this.originUser.userId)
-      if (this.originUser.userId == 1) {
-        console.log("a")
-        var user = new User();
-        user.userId = 2;
-        user.username = "abc"
-        this.destinationUser = user;
-        console.log("b")
-      } else {
-        var user = new User();
-        user.userId = 1;
-        user.username = "trkgrn"
-        this.destinationUser = user;
-      }
-      console.log("Test")
-      this.connectToChat();
-      console.log(this.el)
-      this.el.nativeElement.querySelector("#chat").scrollIntoView();
+
+      let dest = "";
+
+      this.route.params.subscribe((params: any) => {
+        if (params.chatName) {
+          const usernames = params.chatName.split('&');
+          if (usernames[0] == this.originUser.username) {
+            dest = usernames[1];
+          } else {
+            dest = usernames[0];
+          }
+        }
+        this.authService.getUserByUsername(dest).subscribe((resp: any) => {
+          this.destinationUser = resp;
+          this.connectToChat();
+          this.el.nativeElement.querySelector("#chat").scrollIntoView();
+        });
+      });
     });
   }
 
   ngAfterViewChecked(): void {
-    if(this.displayChat)
+    if (this.displayChat)
       this.scrollDown();
   }
 
@@ -137,14 +136,12 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     const nick1 = this.originUser.username;
     const id2 = this.destinationUser?.userId!;
     const nick2 = this.destinationUser?.username!;
-    console.log("Username: " + this.originUser.username)
     if (id1 > id2) {
       this.channelName = nick1 + '&' + nick2;
     } else {
       this.channelName = nick2 + '&' + nick1;
     }
     this.loadChat();
-    console.log('connecting to chat...');
     this.socket = new SockJS(environment.baseUrl + 'chat');
     this.stompClient = Stomp.over(this.socket);
 
@@ -161,7 +158,6 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   }
 
 
-
   loadChat() {
     this.messages = this.chatService.getMessages('getMessages', this.channelName)
     this.messages.subscribe(data => {
@@ -169,8 +165,6 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       mgs.sort((a, b) => (a.messageId > b.messageId) ? 1 : -1)
       this.messages = of(mgs);
     })
-    console.log("MESAJLAR")
-    console.log(this.messages);
   }
 
   sendMsg() {

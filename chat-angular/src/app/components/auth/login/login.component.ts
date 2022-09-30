@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {AuthService} from "../../../services/auth.service";
 import {Router} from "@angular/router";
+import {MessageService} from "primeng/api";
 
 @Component({
   selector: 'app-login',
@@ -13,7 +14,7 @@ export class LoginComponent implements OnInit {
   form:FormGroup;
 
   constructor(private formBuilder:FormBuilder, private authService:AuthService,
-              private router:Router) {
+              private router:Router, private messageService:MessageService) {
     this.form = formBuilder.group({
       username:[null , Validators.required],
       password:[null, Validators.required]
@@ -26,7 +27,11 @@ export class LoginComponent implements OnInit {
 
  async login()
   {
-    let resp:any = await this.authService.login(this.form.value).toPromise();
-    this.router.navigate(["/home"]);
+    let resp:any = await this.authService.login(this.form.value).toPromise()
+      .then(r=>this.router.navigate(["/chat/inbox"]))
+      .catch((err:any)=>{
+        this.messageService.add({severity: 'error', summary: 'Giriş Başarısız',
+          detail: 'Hatalı giriş. Lütfen bilgilerini kontrol edip tekrar deneyin.'});
+      });
   }
 }

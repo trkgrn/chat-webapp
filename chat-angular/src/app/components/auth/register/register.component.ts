@@ -31,8 +31,9 @@ export class RegisterComponent implements OnInit {
   register(){
     this.authService.register(this.form.value)
       .subscribe(data=>{
+        this.messageService.add({severity: 'success', summary: 'Kayıt başarılı!',
+          detail: 'Başarılı bir şekilde kaydınız tamamlandı. Giriş yapın.'});
         this.router.navigate(["/login"]);
-        alert("Kayıt başarılı!");
       },error =>{
         this.messageService.add({severity: 'error', summary: 'Hatalı giriş!',
           detail: error.error});

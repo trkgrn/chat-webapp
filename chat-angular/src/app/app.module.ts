@@ -27,6 +27,7 @@ import { TestComponent } from './components/test/test.component';
 import { ChatComponent } from './components/chat/chat.component';
 import {DialogModule} from "primeng/dialog";
 import {TableModule} from "primeng/table";
+import {PaginatorModule} from "primeng/paginator";
 
 @NgModule({
   declarations: [
@@ -54,7 +55,8 @@ import {TableModule} from "primeng/table";
         HttpClientModule,
         ToastModule,
         DialogModule,
-        TableModule
+        TableModule,
+        PaginatorModule
     ],
   providers: [AuthService,LoginGuard,MessageService,HttpService,
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },],

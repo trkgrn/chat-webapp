@@ -40,6 +40,12 @@ public class UserController {
         return new ResponseEntity<>(new User(), HttpStatus.OK);
     }
 
+    @GetMapping("getUserByUsername")
+    public ResponseEntity<UserDto> getByUsername(@RequestParam String username){
+        User user = this.userService.findByUserName(username);
+        return ResponseEntity.ok(modelMapper.map(user,UserDto.class));
+    }
+
     @GetMapping("/searchCandidateFriends")
     public ResponseEntity<List<UserDto>>  searchCandidateFriendByUserId(@RequestParam Long userId){
         List<User> users = this.userService.searchCandidateFriendByUserId(userId);
@@ -50,9 +56,12 @@ public class UserController {
     }
 
     @GetMapping("/searchCandidateFriendsByUsername")
-    public ResponseEntity<List<UserDto>> searchCandidateFriendByUsername(@RequestParam String token,@RequestParam String username){
+    public ResponseEntity<List<UserDto>> searchCandidateFriendByUsername(@RequestParam String token,
+                                                                         @RequestParam String username,
+                                                                         @RequestParam int pageNo,
+                                                                         @RequestParam int pageSize){
         User thisUser = this.userService.findUserByToken(token);
-        List<User> users = this.userService.searchCandidateFriendByUserIdAndUsername(thisUser.getUserId(),username);
+        List<User> users = this.userService.searchCandidateFriendByUserIdAndUsername(thisUser.getUserId(),username,pageNo,pageSize);
         return ResponseEntity.ok(users
                 .stream()
                 .map(user -> modelMapper.map(user,UserDto.class))

@@ -5,7 +5,7 @@
 .card{
   height: 550px;
   border-radius: 15px !important;
-  background-color: rgb(216, 215, 215) !important;
+  background-color: rgb(255, 255, 255) !important;
 }
 .contacts_body{
   padding:  0.75rem 0 !important;
@@ -139,19 +139,21 @@
   margin-top: auto;
   margin-bottom: auto;
   margin-left: 10px;
-  border-radius: 25px;
-  background-color: #cccccc;
+  border-radius: 20px;
+  background-color: #ffffff;
   padding: 10px;
   position: relative;
+  border: 1px solid #c5c5c5;
 }
 .msg_cotainer_send{
   margin-top: auto;
   margin-bottom: auto;
   margin-right: 10px;
-  border-radius: 25px;
-  background-color: #ffffff;
+  border-radius: 20px;
+  background-color: #eae9e9;
   padding: 10px;
   position: relative;
+  border: 1px solid #c5c5c5;
 }
 .msg_time{
   position: absolute;
@@ -193,11 +195,11 @@
 }
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #5454b6;
+  background: #c3c3c3;
 }
 
 #leftsideMenu li:hover {
-  background-color: rgba(0,0,0,0.3);
+  background-color: rgba(222, 222, 222, 0.76);
   transition: 0.5s;
   padding-left: 15px;
   padding-right: 5px;

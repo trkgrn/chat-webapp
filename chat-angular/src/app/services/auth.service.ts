@@ -50,6 +50,10 @@ export class AuthService {
    return this.http.get<User>(environment.baseUrl+"token/values/"+this.getToken());
    }
 
+   getUserByUsername(username:any){
+    return  this.http.get(environment.baseUrl+"user/getUserByUsername?username="+username);
+   }
+
   getToken() {
     return localStorage.getItem('token') as string;
   }
