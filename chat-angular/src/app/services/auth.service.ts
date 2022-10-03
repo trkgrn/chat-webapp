@@ -104,4 +104,12 @@ export class AuthService {
     return this.http.get(this.authURL + "getAllUser", {headers});
   }
 
+  uploadImage(image:any){
+    return this.httpService.post("image/upload",image);
+  }
+
+  updateUser(user:any){
+    return this.httpService.put("user/update",user);
+  }
+
 }

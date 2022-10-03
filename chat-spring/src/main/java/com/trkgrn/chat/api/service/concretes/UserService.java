@@ -1,5 +1,6 @@
 package com.trkgrn.chat.api.service.concretes;
 
+import com.trkgrn.chat.api.model.concretes.Image;
 import com.trkgrn.chat.api.model.concretes.User;
 import com.trkgrn.chat.api.repository.UserRepository;
 import com.trkgrn.chat.config.jwt.service.JwtUtil;
@@ -50,4 +51,14 @@ public class UserService {
         Pageable pageable = PageRequest.of(pageNo,pageSize);
         return this.userRepository.searchCandidateFriendByUserIdAndUsername(userId,username,pageable);
     }
+
+    public User updateUser( User user){
+        User existingUser = this.findByUserName(user.getUsername());
+        existingUser.setImage(user.getImage());
+        existingUser.setMail(user.getMail());
+        existingUser.setTelNumber(user.getTelNumber());
+        existingUser.setName(user.getName());
+        return userRepository.save(existingUser);
+    }
+
 }

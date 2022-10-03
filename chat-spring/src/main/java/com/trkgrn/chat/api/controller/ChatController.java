@@ -5,6 +5,7 @@ import com.trkgrn.chat.api.model.concretes.Message;
 import com.trkgrn.chat.api.model.dtos.ChatDto;
 import com.trkgrn.chat.api.model.ws.WsMessage;
 import com.trkgrn.chat.api.service.concretes.ChatService;
+import com.trkgrn.chat.api.service.concretes.ImageService;
 import com.trkgrn.chat.api.service.concretes.MessageService;
 import com.trkgrn.chat.api.service.concretes.UserService;
 import org.modelmapper.ModelMapper;
@@ -33,15 +34,18 @@ public class ChatController {
 
     private final UserService userService;
 
+    private final ImageService imageService;
+
     private final ModelMapper modelMapper;
 
 
     @Autowired
-    public ChatController(SimpMessagingTemplate messagingTemplate, ChatService chatService, MessageService messageService, UserService userService, ModelMapper modelMapper) {
+    public ChatController(SimpMessagingTemplate messagingTemplate, ChatService chatService, MessageService messageService, UserService userService, ImageService imageService, ModelMapper modelMapper) {
         this.messagingTemplate = messagingTemplate;
         this.chatService = chatService;
         this.messageService = messageService;
         this.userService = userService;
+        this.imageService = imageService;
         this.modelMapper = modelMapper;
     }
 
@@ -93,7 +97,13 @@ public class ChatController {
         List<Chat> chats = this.chatService.findChatsByUserId(this.userService.findUserByToken(token).getUserId());
         return ResponseEntity.ok(
                 chats.stream()
-                        .map(chat -> modelMapper.map(chat, ChatDto.class))
+                        .map(chat -> {
+                            if(chat.getDestination().getImage() != null)
+                                chat.getDestination().setImage(imageService.getImage(chat.getDestination().getImage().getImageId()));
+                            if(chat.getOrigin().getImage() != null)
+                                chat.getOrigin().setImage(imageService.getImage(chat.getOrigin().getImage().getImageId()));
+                          return modelMapper.map(chat, ChatDto.class);
+                        })
                         .collect(Collectors.toList()));
     }
 

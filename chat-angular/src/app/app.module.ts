@@ -28,6 +28,7 @@ import { ChatComponent } from './components/chat/chat.component';
 import {DialogModule} from "primeng/dialog";
 import {TableModule} from "primeng/table";
 import {PaginatorModule} from "primeng/paginator";
+import { NavbarComponent } from './components/navbar/navbar.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import {PaginatorModule} from "primeng/paginator";
     ForbiddenComponent,
     NotfoundComponent,
     TestComponent,
-    ChatComponent
+    ChatComponent,
+    NavbarComponent
   ],
     imports: [
         BrowserModule,

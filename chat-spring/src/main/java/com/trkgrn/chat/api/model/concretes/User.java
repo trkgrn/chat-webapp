@@ -38,4 +38,8 @@ public class User {
     @Column(name = "user_tel_no",unique = true)
     private String telNumber;
 
+    @OneToOne
+    @JoinColumn(name = "image_id",referencedColumnName = "image_id")
+    private Image image;
+
 }

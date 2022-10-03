@@ -6,4 +6,5 @@ export class User{
   mail:string | undefined ;
   telNumber: string |undefined;
   role:any;
+  image:any;
 }

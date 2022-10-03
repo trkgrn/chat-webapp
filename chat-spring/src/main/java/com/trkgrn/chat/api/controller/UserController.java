@@ -2,6 +2,7 @@ package com.trkgrn.chat.api.controller;
 
 import com.trkgrn.chat.api.model.concretes.User;
 import com.trkgrn.chat.api.model.dtos.UserDto;
+import com.trkgrn.chat.api.service.concretes.ImageService;
 import com.trkgrn.chat.api.service.concretes.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +23,13 @@ public class UserController {
 
     private final ModelMapper modelMapper;
 
+    private final ImageService imageService;
+
     @Autowired
-    public UserController(UserService userService, ModelMapper modelMapper) {
+    public UserController(UserService userService, ModelMapper modelMapper, ImageService imageService) {
         this.userService = userService;
         this.modelMapper = modelMapper;
+        this.imageService = imageService;
     }
 
     @GetMapping("/getAllUser")
@@ -43,6 +47,8 @@ public class UserController {
     @GetMapping("getUserByUsername")
     public ResponseEntity<UserDto> getByUsername(@RequestParam String username){
         User user = this.userService.findByUserName(username);
+        if(user.getImage() != null)
+            user.setImage(imageService.getImage(user.getImage().getImageId()));
         return ResponseEntity.ok(modelMapper.map(user,UserDto.class));
     }
 
@@ -51,8 +57,11 @@ public class UserController {
         List<User> users = this.userService.searchCandidateFriendByUserId(userId);
         return ResponseEntity.ok(users
                 .stream()
-                .map(user -> modelMapper.map(user,UserDto.class))
-                .collect(Collectors.toList()));
+                .map(user -> {
+                    if(user.getImage() != null)
+                        user.setImage(imageService.getImage(user.getImage().getImageId()));
+                  return modelMapper.map(user, UserDto.class);
+                }).collect(Collectors.toList()));
     }
 
     @GetMapping("/searchCandidateFriendsByUsername")
@@ -64,8 +73,22 @@ public class UserController {
         List<User> users = this.userService.searchCandidateFriendByUserIdAndUsername(thisUser.getUserId(),username,pageNo,pageSize);
         return ResponseEntity.ok(users
                 .stream()
-                .map(user -> modelMapper.map(user,UserDto.class))
+                .map(user -> {
+                    if(user.getImage() != null)
+                        user.setImage(imageService.getImage(user.getImage().getImageId()));
+                   return modelMapper.map(user, UserDto.class);
+                })
                 .collect(Collectors.toList()));
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<UserDto> updateUser(@RequestBody User user){
+        User updatedUser = this.userService.updateUser(user);
+        if(updatedUser.getImage() != null)
+            updatedUser.setImage(imageService.getImage(updatedUser.getImage().getImageId()));
+        return new ResponseEntity<UserDto>
+                (modelMapper.map(updatedUser,UserDto.class)
+                        , HttpStatus.OK);
     }
 
 

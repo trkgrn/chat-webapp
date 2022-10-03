@@ -191,5 +191,15 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     );
   }
 
+  getImage(user:any) {
+    if(user){
+      var img = user.image;
+      var base64Data = img.imageByte;
+      var retrievedImage = 'data:image/jpeg;base64,' + base64Data;
+     return  retrievedImage;
+    }
+    return null;
+  }
+
 
 }

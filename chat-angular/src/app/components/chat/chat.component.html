@@ -12,7 +12,7 @@
 <!--                  <span class="input-group-text search_btn"><i class="fas fa-search"></i></span>-->
 <!--                </div>-->
 <!--              </div>-->
-              <button type="button" class="btn btn-primary btn-block" (click)="addFriendPage()">Arkadaş Ekle</button>
+              <button type="button" class="btn btn-primary btn-block" (click)="addFriendPage()"><i class="pi pi-user-plus"></i> Arkadaş Ekle</button>
             </div>
             <div *ngFor="let chat of chats">
               <div class="card-body contacts_body" id="leftsideMenu">
@@ -21,13 +21,13 @@
                     <a href="/chat/t/{{chat.name}}">
                       <div class="d-flex bd-highlight">
                         <div class="img_cont">
-                          <img src="https://therichpost.com/wp-content/uploads/2020/06/avatar2.png"
+                          <img src="{{getImage(getDestinationUser(chat)) || 'https://therichpost.com/wp-content/uploads/2020/06/avatar2.png'}}"
                                class="rounded-circle user_img">
                           <span class="online_icon"></span>
                         </div>
                         <div class="user_info">
-                          <span>{{getDestinationUser(chat).username}}</span>
-                          <p>{{getDestinationUser(chat).username}} is online</p>
+                          <span>{{getDestinationUser(chat).name}}</span>
+                          <p>@{{getDestinationUser(chat).username}} çevrimiçi</p>
                         </div>
                       </div>
                     </a>
@@ -67,12 +67,12 @@
             <div class="card-header msg_head">
               <div class="d-flex bd-highlight">
                 <div class="img_cont">
-                  <img src="https://therichpost.com/wp-content/uploads/2020/06/avatar2.png"
+                  <img src="{{getImage(destinationUser) || 'https://therichpost.com/wp-content/uploads/2020/06/avatar2.png'}}"
                        class="rounded-circle user_img">
                   <span class="online_icon"></span>
                 </div>
                 <div class="user_info">
-                  <span>Chat with {{destinationUser?.name}}</span>
+                  <span>{{destinationUser?.name}}</span>
                 </div>
               </div>
             </div>
@@ -82,7 +82,7 @@
                 <div class="d-flex justify-content-start mb-4"
                      *ngIf="msg.sender === destinationUser!.username; else originUserMessage">
                   <div class="img_cont_msg">
-                    <img src="https://therichpost.com/wp-content/uploads/2020/06/avatar2.png"
+                    <img src="{{getImage(destinationUser) || 'https://therichpost.com/wp-content/uploads/2020/06/avatar2.png'}}"
                          class="rounded-circle user_img_msg">
                   </div>
                   <div class="msg_cotainer">
@@ -99,7 +99,7 @@
                       <span class="msg_time_send">{{whenWasItPublished(msg.t_stamp)}}</span>
                     </div>
                     <div class="img_cont_msg">
-                      <img src="https://therichpost.com/wp-content/uploads/2020/06/avatar2.png"
+                      <img src="{{getImage(originUser) || 'https://therichpost.com/wp-content/uploads/2020/06/avatar2.png'}}"
                            class="rounded-circle user_img_msg">
                     </div>
                   </div>

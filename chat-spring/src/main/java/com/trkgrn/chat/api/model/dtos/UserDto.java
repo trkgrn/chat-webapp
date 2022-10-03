@@ -1,5 +1,6 @@
 package com.trkgrn.chat.api.model.dtos;
 
+import com.trkgrn.chat.api.model.concretes.Image;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,4 +17,5 @@ public class UserDto {
     private String mail;
     private String telNumber;
     private Long userId;
+    private Image image;
 }

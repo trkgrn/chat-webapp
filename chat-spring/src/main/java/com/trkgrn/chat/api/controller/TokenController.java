@@ -1,25 +1,21 @@
 package com.trkgrn.chat.api.controller;
 
 import com.trkgrn.chat.api.exception.ExpiredJwtExc;
-import com.trkgrn.chat.api.exception.NotFoundExc;
 import com.trkgrn.chat.api.exception.NullPointerExc;
 import com.trkgrn.chat.api.model.concretes.Token;
 import com.trkgrn.chat.api.model.concretes.User;
 import com.trkgrn.chat.api.model.dtos.UserDto;
+import com.trkgrn.chat.api.service.concretes.ImageService;
 import com.trkgrn.chat.api.service.concretes.TokenService;
 import com.trkgrn.chat.api.service.userdetail.CustomUserDetails;
 import com.trkgrn.chat.api.service.userdetail.UserDetailService;
 import com.trkgrn.chat.config.jwt.service.JwtUtil;
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.impl.DefaultClaims;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -28,12 +24,17 @@ public class TokenController {
 
     private final TokenService tokenService;
 
+    private final ImageService imageService;
+
+    private final ModelMapper modelMapper;
     @Autowired
     private JwtUtil jwtUtil;
 
     @Autowired
-    public TokenController(TokenService tokenService) {
+    public TokenController(TokenService tokenService, ImageService imageService, ModelMapper modelMapper) {
         this.tokenService = tokenService;
+        this.imageService = imageService;
+        this.modelMapper = modelMapper;
     }
 
     @Autowired
@@ -64,10 +65,12 @@ public class TokenController {
         try {
             CustomUserDetails userDetails = userDetailsService.loadUserByUsername(jwtUtil.extractUsername(token));
             user = userDetails.getUser();
+            if(user.getImage() != null)
+               user.setImage(imageService.getImage(user.getImage().getImageId()));
         } catch (ExpiredJwtException e) {
             throw new ExpiredJwtExc("Oturum süresi sona erdi.");
         }
-        return ResponseEntity.ok(new UserDto(user.getUsername(),user.getName(),user.getRole(),user.getMail(),user.getTelNumber(),user.getUserId()));
+        return ResponseEntity.ok(modelMapper.map(user, UserDto.class));
     }
 
     @DeleteMapping("/{username}")

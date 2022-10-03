@@ -23,6 +23,10 @@ export class HttpService {
     return this.http.post(environment.baseUrl + url, body).toPromise()
   }
 
+  put(url:any, body:any): any {
+    return this.http.put(environment.baseUrl + url, body).toPromise()
+  }
+
   patch(url:any, body:any): any {
     return this.http.patch(environment.baseUrl + url, body).toPromise()
       .then((res:any)=>{
