@@ -11,6 +11,7 @@ import {TestComponent} from "./components/test/test.component";
 import {ChatComponent} from "./components/chat/chat.component";
 
 const routes: Routes = [
+  {path: '', component: ChatComponent, canActivate: [LoginGuard]},
   {path:"login",component:LoginComponent},
   {path:"register",component:RegisterComponent},
   {path:"home",component:HomeComponent,canActivate:[LoginGuard],data:{roles:['KULLANICI','ADMIN']}},
@@ -18,8 +19,8 @@ const routes: Routes = [
   {path:"forbidden",component:ForbiddenComponent},
   {path:"notfound",component:NotfoundComponent},
   {path:"test",component:TestComponent,canActivate:[LoginGuard],data:{roles: ['Deneme']}},
-  {path:"chat/t/:chatName",component:ChatComponent},
-  {path:"chat/inbox",component:ChatComponent},
+  {path:"chat/t/:chatName",component:ChatComponent,canActivate:[LoginGuard],data:{roles:['KULLANICI','ADMIN']}},
+  {path:"chat/inbox",component:ChatComponent,canActivate:[LoginGuard],data:{roles:['KULLANICI','ADMIN']}},
   {path:"**",redirectTo:"notfound",pathMatch:"full"}
 ];
 

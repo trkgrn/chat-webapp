@@ -2,7 +2,6 @@ import {AfterViewChecked, Component, ElementRef, OnInit} from '@angular/core';
 import * as SockJS from 'sockjs-client';
 import * as Stomp from 'stompjs';
 import {environment} from "../../../environments/environment";
-import {User} from "../../model/user";
 import {FormControl} from "@angular/forms";
 import {Observable, of} from "rxjs";
 import {AuthService} from "../../services/auth.service";

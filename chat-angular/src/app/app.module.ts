@@ -29,6 +29,13 @@ import {DialogModule} from "primeng/dialog";
 import {TableModule} from "primeng/table";
 import {PaginatorModule} from "primeng/paginator";
 import { NavbarComponent } from './components/navbar/navbar.component';
+import {environment} from "../environments/environment";
+import {AsyncPipe} from "@angular/common";
+import {NotificationService} from "./services/notification.service";
+import {AngularFireModule} from "@angular/fire/compat";
+import {AngularFireMessagingModule} from "@angular/fire/compat/messaging";
+
+
 
 @NgModule({
   declarations: [
@@ -58,9 +65,11 @@ import { NavbarComponent } from './components/navbar/navbar.component';
         ToastModule,
         DialogModule,
         TableModule,
-        PaginatorModule
+        PaginatorModule,
+      AngularFireModule.initializeApp(environment.firebase),
+      AngularFireMessagingModule
     ],
-  providers: [AuthService,LoginGuard,MessageService,HttpService,
+  providers: [AuthService,LoginGuard,MessageService,HttpService,AsyncPipe,NotificationService,
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },],
   bootstrap: [AppComponent]
 })

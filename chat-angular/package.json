@@ -14,11 +14,13 @@
     "@angular/common": "^14.0.0",
     "@angular/compiler": "^14.0.0",
     "@angular/core": "^14.0.0",
+    "@angular/fire": "^7.5.0",
     "@angular/forms": "^14.0.0",
     "@angular/platform-browser": "^14.0.0",
     "@angular/platform-browser-dynamic": "^14.0.0",
     "@angular/router": "^14.0.0",
     "bootstrap": "^5.2.1",
+    "firebase": "^9.15.0",
     "jquery": "^3.6.1",
     "net": "^1.0.2",
     "primeflex": "^3.2.1",
@@ -31,6 +33,7 @@
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
+    "@angular-devkit/architect": ">= 0.900 < 0.1300",
     "@angular-devkit/build-angular": "^14.2.1",
     "@angular/cli": "~14.2.1",
     "@angular/compiler-cli": "^14.0.0",
@@ -38,12 +41,18 @@
     "@types/jquery": "^3.5.14",
     "@types/sockjs-client": "^1.5.1",
     "@types/stompjs": "^2.3.3",
+    "firebase-tools": "^8.0.0",
+    "fuzzy": "^0.1.3",
+    "inquirer": "^6.2.2",
+    "inquirer-autocomplete-prompt": "^1.0.1",
     "jasmine-core": "~4.3.0",
+    "jsonc-parser": "^3.0.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.1.0",
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.0.0",
+    "open": "^7.0.3",
     "typescript": "~4.7.2"
   }
 }

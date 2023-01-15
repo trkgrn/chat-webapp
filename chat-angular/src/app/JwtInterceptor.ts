@@ -20,9 +20,20 @@ export class JwtInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     // add auth header with jwt if account is logged in and request is to the api url
     const isLoggedIn = this.authService.getToken();
+    const notificationToken = localStorage.getItem("notificationToken");
     if (isLoggedIn) {
       request = request.clone({
-        setHeaders: {Authorization: `Bearer ${this.authService.getToken()}`}
+        setHeaders: {
+          Authorization: `Bearer ${this.authService.getToken()}`,
+          NotificationToken: `${notificationToken}`
+        }
+      });
+    }
+    else if (notificationToken) {
+      request = request.clone({
+      setHeaders: {
+        NotificationToken: `${notificationToken}`
+      }
       });
     }
 
@@ -35,7 +46,8 @@ export class JwtInterceptor implements HttpInterceptor {
         }
         return event;
       })
-    ).pipe( tap(() => {},
+    ).pipe(tap(() => {
+      },
       (err: any) => {
         if (err instanceof HttpErrorResponse) {
           if (err.status == 401) {
