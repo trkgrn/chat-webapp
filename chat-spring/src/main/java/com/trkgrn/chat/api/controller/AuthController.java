@@ -3,14 +3,15 @@ package com.trkgrn.chat.api.controller;
 import com.trkgrn.chat.api.exception.SQLExc;
 import com.trkgrn.chat.api.model.concretes.Token;
 import com.trkgrn.chat.api.model.concretes.User;
+import com.trkgrn.chat.api.service.concretes.NotificationKeyService;
 import com.trkgrn.chat.api.service.concretes.TokenService;
 import com.trkgrn.chat.api.service.concretes.UserService;
+import com.trkgrn.chat.api.service.kafka.KafkaProducerService;
 import com.trkgrn.chat.config.jwt.model.Response;
 import com.trkgrn.chat.api.service.userdetail.CustomUserDetails;
 import com.trkgrn.chat.api.service.userdetail.UserDetailService;
 import com.trkgrn.chat.config.jwt.model.AuthRequest;
 import com.trkgrn.chat.config.jwt.service.JwtUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @RestController
@@ -27,23 +29,36 @@ import javax.validation.Valid;
 @RequestMapping("/auth")
 public class AuthController {
 
-    @Autowired
-    private JwtUtil jwtUtil;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
 
-    @Autowired
-    private UserDetailService userDetailsService;
+    private final AuthenticationManager authenticationManager;
 
-    @Autowired
-    private UserService userService;
+    private final UserDetailService userDetailsService;
 
-    @Autowired
-    private TokenService tokenService;
+    private final UserService userService;
+
+    private final TokenService tokenService;
+
+    private final NotificationKeyService notificationKeyService;
+
+    private final KafkaProducerService kafkaProducerService;
+
+    private final HttpServletRequest request;
 
     @Value("${jwt.login.expire.hours}")
     Long expireHours;
+
+    public AuthController(JwtUtil jwtUtil, AuthenticationManager authenticationManager, UserDetailService userDetailsService, UserService userService, TokenService tokenService, NotificationKeyService notificationKeyService, KafkaProducerService kafkaProducerService, HttpServletRequest request) {
+        this.jwtUtil = jwtUtil;
+        this.authenticationManager = authenticationManager;
+        this.userDetailsService = userDetailsService;
+        this.userService = userService;
+        this.tokenService = tokenService;
+        this.notificationKeyService = notificationKeyService;
+        this.kafkaProducerService = kafkaProducerService;
+        this.request = request;
+    }
 
     @PostMapping("/login")
     public ResponseEntity<Response> login(@RequestBody AuthRequest authRequest) throws Exception {
@@ -55,9 +70,14 @@ public class AuthController {
         final CustomUserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.getUsername());
         final String jwt = jwtUtil.generateToken(userDetails,expireHours);
 
-        // rediste 10 dk kaydet
+        // redise kaydet
             tokenService.save(new Token(authRequest.getUsername(),jwt),expireHours);
-            
+
+        if (request.getHeader("NotificationToken")!=null){
+            String requestKey = request.getHeader("NotificationToken");
+            System.out.println(requestKey);
+            notificationKeyService.save(authRequest.getUsername(),requestKey);
+        }
 
         return new ResponseEntity<Response>(new Response(jwt, userDetails.getRole(), userDetails.getId()), HttpStatus.OK);
     }
@@ -71,6 +91,8 @@ public class AuthController {
         catch (DataIntegrityViolationException ex){
             throw new SQLExc("Sistemde bu bilgilere ait kayıt bulunmaktadır. Lütfen bilgilerinizi kontrol edin.");
         }
+
+        kafkaProducerService.send(user.getUsername());
 
           return new ResponseEntity<>(addedUser,HttpStatus.CREATED);
     }

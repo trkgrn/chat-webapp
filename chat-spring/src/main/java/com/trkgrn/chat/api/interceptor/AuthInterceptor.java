@@ -3,6 +3,7 @@ package com.trkgrn.chat.api.interceptor;
 import com.trkgrn.chat.api.exception.ExpiredJwtExc;
 import com.trkgrn.chat.api.exception.NullPointerExc;
 import com.trkgrn.chat.api.model.concretes.Token;
+import com.trkgrn.chat.api.service.concretes.NotificationKeyService;
 import com.trkgrn.chat.api.service.concretes.TokenService;
 import com.trkgrn.chat.api.service.userdetail.CustomUserDetails;
 import com.trkgrn.chat.api.service.userdetail.UserDetailService;
@@ -26,21 +27,26 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     private final TokenService tokenService;
 
+    private final NotificationKeyService notificationKeyService;
+
     private final JwtUtil jwtUtil;
 
     private final UserDetailService userDetailsService;
 
+
     @Value("${jwt.refresh.expire.hours}")
     Long expireHours;
 
-    public AuthInterceptor(TokenService tokenService, JwtUtil jwtUtil, UserDetailService userDetailsService) {
+    public AuthInterceptor(TokenService tokenService, NotificationKeyService notificationKeyService, JwtUtil jwtUtil, UserDetailService userDetailsService) {
         this.tokenService = tokenService;
+        this.notificationKeyService = notificationKeyService;
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
     }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+
         if (request.getHeader("Authorization") != null) {
             String jwt = request.getHeader("Authorization").substring(7);
             String username = "";
@@ -73,8 +79,9 @@ public class AuthInterceptor implements HandlerInterceptor {
                     response.addCookie(new Cookie("test","sago"));
                 }
             }
-            else{
+            else{ // oturumu sonlandır
                 response.setStatus(401);
+                notificationKeyService.delete(username);
                 return false;
             }
         }
