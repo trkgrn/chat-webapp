@@ -1,9 +1,6 @@
 package com.trkgrn.chat.config.jwt.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.trkgrn.chat.api.exception.ExpiredJwtExc;
 import com.trkgrn.chat.api.service.userdetail.UserDetailService;
-import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,9 +14,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Map;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {

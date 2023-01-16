@@ -1,10 +1,8 @@
 package com.trkgrn.chat.api.service.concretes;
 
-import com.trkgrn.chat.api.model.concretes.Image;
 import com.trkgrn.chat.api.model.concretes.User;
 import com.trkgrn.chat.api.repository.UserRepository;
 import com.trkgrn.chat.config.jwt.service.JwtUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,7 +17,6 @@ public class UserService {
 
     private final JwtUtil jwtUtil;
 
-    @Autowired
     public UserService(UserRepository userRepository, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.jwtUtil = jwtUtil;
@@ -31,7 +28,7 @@ public class UserService {
 
     public User add(User user) {
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
-        User addedUser =  this.userRepository.save(user);
+        User addedUser = this.userRepository.save(user);
         return addedUser;
     }
 
@@ -39,20 +36,20 @@ public class UserService {
         return this.userRepository.findAll();
     }
 
-    public User findUserByToken(String token){
+    public User findUserByToken(String token) {
         return this.findByUserName(jwtUtil.extractUsername(token));
     }
 
-    public List<User> searchCandidateFriendByUserId(Long userId){
+    public List<User> searchCandidateFriendByUserId(Long userId) {
         return this.userRepository.searchCandidateFriendByUserId(userId);
     }
 
-    public List<User> searchCandidateFriendByUserIdAndUsername(Long userId,String username,int pageNo,int pageSize){
-        Pageable pageable = PageRequest.of(pageNo,pageSize);
-        return this.userRepository.searchCandidateFriendByUserIdAndUsername(userId,username,pageable);
+    public List<User> searchCandidateFriendByUserIdAndUsername(Long userId, String username, int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        return this.userRepository.searchCandidateFriendByUserIdAndUsername(userId, username, pageable);
     }
 
-    public User updateUser( User user){
+    public User updateUser(User user) {
         User existingUser = this.findByUserName(user.getUsername());
         existingUser.setImage(user.getImage());
         existingUser.setMail(user.getMail());

@@ -9,7 +9,6 @@ import com.trkgrn.chat.api.service.concretes.ImageService;
 import com.trkgrn.chat.api.service.concretes.MessageService;
 import com.trkgrn.chat.api.service.concretes.UserService;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -39,7 +37,6 @@ public class ChatController {
     private final ModelMapper modelMapper;
 
 
-    @Autowired
     public ChatController(SimpMessagingTemplate messagingTemplate, ChatService chatService, MessageService messageService, UserService userService, ImageService imageService, ModelMapper modelMapper) {
         this.messagingTemplate = messagingTemplate;
         this.chatService = chatService;
@@ -73,7 +70,7 @@ public class ChatController {
 
     // ##########################################################################
 
-    @MessageMapping("/chat/{to}") //to = nome canale
+    @MessageMapping("/chat/{to}")
     public void sendMessage(@DestinationVariable String to, Message message) {
         System.out.println("handling send message: " + message + " to: " + to);
         Chat chat = this.chatService.createAndOrGetChat(to);
@@ -84,28 +81,16 @@ public class ChatController {
     }
 
     @PostMapping("/getMessages")
-    public List<Message> getMessages(@RequestBody String chat) {
-        Chat chat1 = this.chatService.getChatByName(chat);
-        if (chat1 != null) {
-            return this.messageService.getMessagesByChatName(chat);
+    public ResponseEntity<List<Message>> getMessages(@RequestBody String chatName) {
+        Chat chat = this.chatService.getChatByName(chatName);
+        if (chat != null) {
+            return ResponseEntity.ok(this.messageService.getMessagesByChatName(chatName));
         }
-        return new ArrayList<Message>();
+        return ResponseEntity.ok(new ArrayList<>());
     }
 
     @GetMapping("/getChats/{token}")
     public ResponseEntity<List<ChatDto>> getAllChatByUserId(@PathVariable String token) {
-        List<Chat> chats = this.chatService.findChatsByUserId(this.userService.findUserByToken(token).getUserId());
-        return ResponseEntity.ok(
-                chats.stream()
-                        .map(chat -> {
-                            if(chat.getDestination().getImage() != null)
-                                chat.getDestination().setImage(imageService.getImage(chat.getDestination().getImage().getImageId()));
-                            if(chat.getOrigin().getImage() != null)
-                                chat.getOrigin().setImage(imageService.getImage(chat.getOrigin().getImage().getImageId()));
-                          return modelMapper.map(chat, ChatDto.class);
-                        })
-                        .collect(Collectors.toList()));
+        return ResponseEntity.ok(chatService.findChatsByUserId(this.userService.findUserByToken(token).getUserId()));
     }
-
-
 }

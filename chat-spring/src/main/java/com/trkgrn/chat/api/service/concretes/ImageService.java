@@ -2,13 +2,11 @@ package com.trkgrn.chat.api.service.concretes;
 
 import com.trkgrn.chat.api.model.concretes.Image;
 import com.trkgrn.chat.api.repository.ImageRepository;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Optional;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;

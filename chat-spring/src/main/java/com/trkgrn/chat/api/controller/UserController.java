@@ -33,34 +33,32 @@ public class UserController {
     }
 
     @GetMapping("/getAllUser")
-    public ResponseEntity<?> getAll(){
+    public ResponseEntity<?> getAll() {
         return ResponseEntity.ok(this.userService.getAllUser());
     }
 
-    @GetMapping("/test")
-    public ResponseEntity<?> test(){
-        System.out.println("içeride");
-
-        return new ResponseEntity<>(new User(), HttpStatus.OK);
+    @GetMapping("/role/{username}")
+    public ResponseEntity<?> getUserRole(@PathVariable String username) {
+        return ResponseEntity.ok(this.userService.findByUserName(username).getRole());
     }
 
     @GetMapping("getUserByUsername")
-    public ResponseEntity<UserDto> getByUsername(@RequestParam String username){
+    public ResponseEntity<UserDto> getByUsername(@RequestParam String username) {
         User user = this.userService.findByUserName(username);
-        if(user.getImage() != null)
+        if (user.getImage() != null)
             user.setImage(imageService.getImage(user.getImage().getImageId()));
-        return ResponseEntity.ok(modelMapper.map(user,UserDto.class));
+        return ResponseEntity.ok(modelMapper.map(user, UserDto.class));
     }
 
     @GetMapping("/searchCandidateFriends")
-    public ResponseEntity<List<UserDto>>  searchCandidateFriendByUserId(@RequestParam Long userId){
+    public ResponseEntity<List<UserDto>> searchCandidateFriendByUserId(@RequestParam Long userId) {
         List<User> users = this.userService.searchCandidateFriendByUserId(userId);
         return ResponseEntity.ok(users
                 .stream()
                 .map(user -> {
-                    if(user.getImage() != null)
+                    if (user.getImage() != null)
                         user.setImage(imageService.getImage(user.getImage().getImageId()));
-                  return modelMapper.map(user, UserDto.class);
+                    return modelMapper.map(user, UserDto.class);
                 }).collect(Collectors.toList()));
     }
 
@@ -68,29 +66,28 @@ public class UserController {
     public ResponseEntity<List<UserDto>> searchCandidateFriendByUsername(@RequestParam String token,
                                                                          @RequestParam String username,
                                                                          @RequestParam int pageNo,
-                                                                         @RequestParam int pageSize){
+                                                                         @RequestParam int pageSize) {
         User thisUser = this.userService.findUserByToken(token);
-        List<User> users = this.userService.searchCandidateFriendByUserIdAndUsername(thisUser.getUserId(),username,pageNo,pageSize);
+        List<User> users = this.userService.searchCandidateFriendByUserIdAndUsername(thisUser.getUserId(), username, pageNo, pageSize);
         return ResponseEntity.ok(users
                 .stream()
                 .map(user -> {
-                    if(user.getImage() != null)
+                    if (user.getImage() != null)
                         user.setImage(imageService.getImage(user.getImage().getImageId()));
-                   return modelMapper.map(user, UserDto.class);
+                    return modelMapper.map(user, UserDto.class);
                 })
                 .collect(Collectors.toList()));
     }
 
     @PutMapping("/update")
-    public ResponseEntity<UserDto> updateUser(@RequestBody User user){
+    public ResponseEntity<UserDto> updateUser(@RequestBody User user) {
         User updatedUser = this.userService.updateUser(user);
-        if(updatedUser.getImage() != null)
+        if (updatedUser.getImage() != null)
             updatedUser.setImage(imageService.getImage(updatedUser.getImage().getImageId()));
         return new ResponseEntity<UserDto>
-                (modelMapper.map(updatedUser,UserDto.class)
+                (modelMapper.map(updatedUser, UserDto.class)
                         , HttpStatus.OK);
     }
-
 
 
 }

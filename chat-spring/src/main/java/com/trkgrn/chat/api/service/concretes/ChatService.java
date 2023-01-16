@@ -1,21 +1,27 @@
 package com.trkgrn.chat.api.service.concretes;
 
 import com.trkgrn.chat.api.model.concretes.Chat;
+import com.trkgrn.chat.api.model.dtos.ChatDto;
 import com.trkgrn.chat.api.repository.ChatRepository;
-import com.trkgrn.chat.api.repository.UserRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ChatService {
 
     private final ChatRepository chatRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
+    private final ModelMapper modelMapper;
+    private final ImageService imageService;
 
-    public ChatService(ChatRepository chatRepository, UserRepository userRepository) {
+    public ChatService(ChatRepository chatRepository, UserService userService, ModelMapper modelMapper, ImageService imageService) {
         this.chatRepository = chatRepository;
-        this.userRepository = userRepository;
+        this.userService = userService;
+        this.modelMapper = modelMapper;
+        this.imageService = imageService;
     }
 
     public Chat save(Chat newChat) {
@@ -27,22 +33,28 @@ public class ChatService {
     }
 
     public Chat createAndOrGetChat(String name) {
-        Chat ce = this.chatRepository.findByName(name);
-        if (ce != null) {
-            return ce;
-        }
-        else {
+        Chat chat = this.chatRepository.findByName(name);
+        if (chat != null) {
+            return chat;
+        } else {
             Chat newChat = new Chat();
             newChat.setName(name);
-            newChat.setOrigin(this.userRepository.findByUsername(name.split("&")[0]));
-            newChat.setDestination(this.userRepository.findByUsername(name.split("&")[1]));
+            newChat.setOrigin(this.userService.findByUserName(name.split("&")[0]));
+            newChat.setDestination(this.userService.findByUserName(name.split("&")[1]));
             return chatRepository.save(newChat);
         }
     }
 
-    public List<Chat> findChatsByUserId(Long userId) {
-        return this.chatRepository.findAllByDestination_UserIdOrOrigin_UserId(userId,userId);
+    public List<ChatDto> findChatsByUserId(Long userId) {
+        List<Chat> chats = this.chatRepository.findAllByDestination_UserIdOrOrigin_UserId(userId, userId);
+        return chats.stream()
+                .map(chat -> {
+                    if (chat.getDestination().getImage() != null)
+                        chat.getDestination().setImage(imageService.getImage(chat.getDestination().getImage().getImageId()));
+                    if (chat.getOrigin().getImage() != null)
+                        chat.getOrigin().setImage(imageService.getImage(chat.getOrigin().getImage().getImageId()));
+                    return modelMapper.map(chat, ChatDto.class);
+                })
+                .collect(Collectors.toList());
     }
-
-
 }

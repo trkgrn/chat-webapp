@@ -2,7 +2,6 @@ package com.trkgrn.chat.api.controller;
 
 import com.trkgrn.chat.api.model.concretes.Image;
 import com.trkgrn.chat.api.service.concretes.ImageService;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,4 +27,6 @@ public class ImageController {
     public Image getImage(@PathVariable("imageId") Long imageId) {
         return this.imageService.getImage(imageId);
     }
+
+
 }

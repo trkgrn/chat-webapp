@@ -9,8 +9,6 @@ import java.util.concurrent.TimeUnit;
 @Repository
 public class TokenRepository {
     private final RedisTemplate template;
-    private final String HASH_KEY = "Token";
-
 
     public TokenRepository(RedisTemplate template) {
         this.template = template;

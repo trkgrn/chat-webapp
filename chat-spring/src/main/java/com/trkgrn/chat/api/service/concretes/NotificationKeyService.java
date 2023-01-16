@@ -3,7 +3,6 @@ package com.trkgrn.chat.api.service.concretes;
 import com.trkgrn.chat.api.repository.NotificationKeyRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Map;
 
 @Service

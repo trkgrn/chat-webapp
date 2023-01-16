@@ -4,7 +4,6 @@ import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -19,7 +18,6 @@ public class NotificationKeyRepository {
     }
 
     public void save(String username, String notificationKey) {
-//        template.opsForValue().set(username, notificationKey);
         hashOperations.put(HASH_KEY, username, notificationKey);
     }
 

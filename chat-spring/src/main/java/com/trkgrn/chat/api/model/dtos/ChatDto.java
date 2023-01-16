@@ -1,6 +1,5 @@
 package com.trkgrn.chat.api.model.dtos;
 
-import com.trkgrn.chat.api.model.concretes.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -60,6 +60,7 @@ public class JwtUtil {
     // userDetails objesini alır. createToken metoduna gönderir.
     public String generateToken(UserDetails userDetails,Long expireTime) {
         Map<String, Object> claims = new HashMap<>();
+
         return createToken(claims, userDetails.getUsername(),expireTime);
     }
 
