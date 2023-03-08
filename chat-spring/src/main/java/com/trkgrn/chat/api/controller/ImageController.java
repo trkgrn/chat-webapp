@@ -19,8 +19,8 @@ public class ImageController {
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<?> uploadImage(@RequestParam("imageFile") MultipartFile file) throws IOException {
-        return ResponseEntity.ok(this.imageService.uploadImage(file));
+    public ResponseEntity<?> uploadImage(@RequestPart("imageFile") MultipartFile imageFile) throws IOException {
+        return ResponseEntity.ok(this.imageService.uploadImage(imageFile));
     }
 
     @GetMapping(path = { "/get/{imageId}" })

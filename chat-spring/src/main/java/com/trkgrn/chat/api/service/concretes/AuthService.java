@@ -67,15 +67,17 @@ public class AuthService {
         return new AuthResponse(jwt, userDetails.getRole(), userDetails.getId());
     }
 
-    public String register(User user) {
+    public User register(User user) {
+        User addedUser = null;
+        user.setImage(null);
         try {
-            this.userService.add(user);
+          addedUser =  this.userService.add(user);
         } catch (DataIntegrityViolationException ex) {
             throw new SQLExc("Sistemde bu bilgilere ait kayıt bulunmaktadır. Lütfen bilgilerinizi kontrol edin.");
         }
 
         kafkaProducerService.send(user.getUsername());
-        return "Kayıt başarılı";
+        return addedUser;
     }
 
 

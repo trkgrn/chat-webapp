@@ -46,29 +46,6 @@ public class ChatController {
         this.modelMapper = modelMapper;
     }
 
-    @MessageMapping("/chat")
-    //@SendTo("/topic")
-    //@SendToUser()
-    public void chatEndpoint(@Payload WsMessage wsMessage) {
-        System.out.println("Mesaj: " + wsMessage);
-        messagingTemplate.convertAndSend("/topic", wsMessage);
-    }
-
-    @MessageMapping("/message")
-    @SendTo("/chatroom/public")
-    public void receivePublicMessage(@Payload WsMessage message) {
-        System.out.println(message);
-    }
-
-    @MessageMapping("/private-message")
-    public void receivePrivateMessage(@Payload WsMessage message) {
-        System.out.println(message);
-        messagingTemplate.convertAndSendToUser(message.getReceiver(), "/private", message);
-
-    }
-
-
-    // ##########################################################################
 
     @MessageMapping("/chat/{to}")
     public void sendMessage(@DestinationVariable String to, Message message) {
@@ -79,6 +56,14 @@ public class ChatController {
         message = this.messageService.save(message);
         messagingTemplate.convertAndSend("/topic/messages/" + to, message);
     }
+
+//    @MessageMapping("/chat/{to}")
+//    @SendTo("/chatroom/{to}")
+//    public void receivePublicMessage(@DestinationVariable String to, Message message) {
+//        System.out.println(message);
+//        messagingTemplate.convertAndSend("/topic/messages/" + to, message);
+//    }
+
 
     @PostMapping("/getMessages")
     public ResponseEntity<List<Message>> getMessages(@RequestBody String chatName) {

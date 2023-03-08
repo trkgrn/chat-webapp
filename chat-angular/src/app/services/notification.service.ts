@@ -19,6 +19,7 @@ export class NotificationService {
       (token) => {
         if (typeof token === "string") {
           localStorage.setItem("notificationToken", token);
+          console.log(token);
         }
       },
       (err) => {

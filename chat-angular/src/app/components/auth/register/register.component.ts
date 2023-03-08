@@ -43,20 +43,21 @@ export class RegisterComponent implements OnInit {
     this.form.get('image')?.reset()
     let addedUser: any;
     await this.authService.register(this.form.value).toPromise()
-      .then((res: any) => {
+      .then( async (res: any) => {
         console.log(res);
         addedUser = res;
-        this.router.navigate(["/login"]);
+        if (addedUser)
+          await this.updateUser(addedUser)
+      await  this.router.navigate(["/login"]);
       })
-      .catch((err: any) => {
-        this.messageService.add({
+      .catch(async (err: any) => {
+      await  this.messageService.add({
           severity: 'error', summary: 'Hatalı giriş!',
           detail: err.error
         });
       });
 
-    if (addedUser)
-      await this.updateUser(addedUser)
+
   }
 
   async uploadImage(addedUser: any) {
